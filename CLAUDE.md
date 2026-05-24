@@ -204,19 +204,44 @@ await fetch(EVENTS_URL, {
 
 ## File uploads
 
-Use `FILES` for uploading binary files (PDFs, images, etc.). Always check `res.ok` before treating the upload as successful — the server may reject the file (wrong MIME type → 415, too large → 413, storage limit → 507) and you must not create DB records pointing to a file that was never stored.
+Use `createFilesHelper` from `/hub-sdk.js` for all file operations. It handles correct URL construction, upload error detection, and deletion — do not roll your own `fetch` calls against `FILES`.
+
+```js
+import { createFilesHelper } from "/hub-sdk.js";
+const files = createFilesHelper(window.__FILES_URL ?? "");
+```
+
+**Upload** — resolves with `{ id, url }` or throws on any server error (wrong MIME type → 415, too large → 413, storage limit → 507). Never insert a DB record until `upload()` resolves successfully.
 
 ```js
 async function uploadFile(file) {
-  const fd = new FormData();
-  fd.append("file", file);
-  const res  = await fetch(FILES, { method: "POST", body: fd });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? `Upload failed (${res.status})`);
-  const fileId  = data.id;
-  const fileUrl = data.url;   // use this URL to link or display the file
+  const { id: fileId, url: fileUrl } = await files.upload(file);
   // now safe to insert into your DB
 }
+```
+
+**Delete** — takes the file ID (not a URL):
+
+```js
+await files.delete(fileId).catch(() => {});
+```
+
+**List** — returns `{ files, totalBytes, limit }`:
+
+```js
+const { files: fileList, totalBytes, limit } = await files.list();
+```
+
+**Get a file URL** — for linking or displaying:
+
+```js
+const url = files.url(fileId);  // e.g. /run/{app-id}/api/files/{id}
+```
+
+**Show the upload area only when files are available** (guard against demo mode):
+
+```js
+const uploadHtml = window.__FILES_URL ? `<div class="upload-area">…</div>` : "";
 ```
 
 Allowed MIME types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`, `image/heic`, `image/heif`, `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` (docx), `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` (xlsx), `text/plain`, `text/markdown`.
