@@ -61,6 +61,7 @@ dist/
 | `tags` | No | Array of strings for filtering |
 | `nav` | No | `{ "label": "..." }` — adds the app to the hub's top navigation bar. Uses `icon` automatically. Omit for infrequently-accessed apps. |
 | `widget` | No | `{ "label": "...", "size": "small" \| "medium" \| "large" }` — shows a summary tile on the dashboard |
+| `row_policies` | No | `"storage": "db"` apps only — hub-enforced per-table row access rules (private data, board/committee-only tables, etc.). See "Row-level access control" in CLAUDE.md. |
 
 ### resource_limits
 

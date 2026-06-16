@@ -636,19 +636,34 @@ When `DB` and `CONTEXT` are empty strings (local development or demo), the app s
 
 ### Migration SQL
 
-Migrations run on the shared hub database. The hub validates and rejects any migration that contains:
+Each household gets its own isolated SQLite (Cloudflare D1) database. Migrations live in
+`migrations/001_init.sql` (add `002_*.sql`, etc. for later versions) and are applied in
+ascending order, skipping versions already applied. Migrations must be additive only
+(`CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS` — `ALTER TABLE ADD COLUMN` is
+supported by SQLite but has no `IF NOT EXISTS`, so guard it in the migration runner's
+expected style or avoid it for v1 tables).
 
-- `CREATE FUNCTION` / `CREATE PROCEDURE` / `CREATE TRIGGER` — not allowed; the hub manages all database functions
-- `SECURITY DEFINER` — not allowed; privilege escalation risk
-- `GRANT` / `REVOKE` — not allowed; the hub manages role permissions
-- `CREATE POLICY` / `DROP POLICY` — not allowed; the hub applies row-level security after migrations
-- `CREATE EXTENSION` / `CREATE ROLE` / `ALTER ROLE` / `CREATE SCHEMA` — system-level, not allowed
-- `CREATE FOREIGN` / `CREATE SERVER` — not allowed; foreign data wrappers are a data exfiltration risk
-- `COPY` — not allowed; file system access
-- `public.` qualified names (e.g. `public.family_members`) — not allowed; use unqualified names instead
-- `SET ROLE` / `SET SESSION AUTHORIZATION` — not allowed
+**Table naming**: every table name — in migrations *and* in app SQL — must be prefixed
+with `app_{appId}__` (e.g. app id `streaks` -> `app_streaks__streaks`,
+`app_streaks__streak_logs`). The hub's DDL guard rejects any `CREATE TABLE`/`CREATE INDEX`
+whose name doesn't start with your app's prefix. IDs are `TEXT` (use
+`crypto.randomUUID()` client-side) — there is no `household_id` column; each household's
+data already lives in its own database file.
 
-Migrations must be additive only (`CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ADD COLUMN IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`). The hub enforces RLS on every table after migrations run — do not attempt to manage it yourself.
+The hub validates and rejects any migration that contains:
+
+- `DROP TABLE` / `DROP COLUMN` / `RENAME COLUMN` / `RENAME TABLE` / `TRUNCATE`
+- `CREATE FUNCTION` / `CREATE PROCEDURE` / `CREATE TRIGGER`
+- `SECURITY DEFINER`, `GRANT`, `REVOKE`, `CREATE EXTENSION`, `CREATE ROLE`
+- `PRAGMA`, `ATTACH DATABASE`, `VACUUM INTO`
+- `CREATE TABLE` without `IF NOT EXISTS`, or `ALTER TABLE ADD COLUMN` without `IF NOT EXISTS`
+- Any `CREATE`/`DROP`/`ALTER TABLE|INDEX|VIEW|TRIGGER` whose target table name doesn't start with your app's `app_{appId}__` prefix
+
+Row-level access restrictions are **not** expressed in SQL (no `CREATE POLICY`/RLS) —
+declare them as `row_policies` in `manifest.json` instead; see "Row-level access control"
+below. Anything not declared there is fully readable/writable by any household member
+whose session calls `/api/db` — DDL and table layout decide *what* exists, `row_policies`
+decides *who* can touch which rows.
 
 ### App JavaScript
 
@@ -660,6 +675,207 @@ Migrations must be additive only (`CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ADD
 ### CDN whitelist
 
 `cdn_whitelist` entries in the manifest must be `https://` origins only (e.g. `"https://cdn.jsdelivr.net"`). No paths, no wildcards, no `http://`. The hub rejects manifests with invalid entries and strips any that bypass validation at CSP-build time.
+
+## Row-level access control (storage: db apps)
+
+By default, `/api/db` runs whatever SQL the app sends against the household's
+shared D1 database — **any household member can read or write any row in any
+table**, regardless of what the app's UI shows. Client-side checks like
+`if (isAdult(ME)) { ... }` are cosmetic only: a child can open devtools and
+`fetch` your `DB` endpoint directly with arbitrary SQL.
+
+If your app has data that should be restricted by member, role, or
+visibility (private notes, financial accounts, votes, board-only records,
+etc.), declare a `row_policies` block in `manifest.json`. The hub rewrites
+incoming SQL to add the right `WHERE`/`EXISTS` conditions and forces the
+right columns on `INSERT`, **before** your SQL ever reaches the database —
+app code cannot bypass it, and a malicious client sending raw SQL gets the
+same restrictions.
+
+```json
+{
+  "storage": "db",
+  "row_policies": {
+    "<unprefixed_table_name>": { "kind": "...", ... }
+  }
+}
+```
+
+- Keys are **unprefixed** table names (`"streaks"`, not `"app_streaks__streaks"`)
+  — the hub adds the `app_{appId}__` prefix automatically.
+- Tables with no entry are completely unaffected — opt-in, fully backward compatible.
+- Unsupported SQL shapes that reference a governed table (JOINs, aliases,
+  subqueries in `FROM`) are **rejected outright** (fail closed) rather than
+  silently under-enforced — keep queries against governed tables to simple
+  single-table `SELECT`/`INSERT`/`UPDATE`/`DELETE`.
+- On a policy violation, `/api/db` returns `403` with `{ "error": "..." }`.
+
+### Policy kinds
+
+#### `owner_only` — a row belongs to exactly one member
+
+```json
+{ "kind": "owner_only", "member_column": "member_id", "adults_bypass": true }
+```
+
+- Non-adults: every query is restricted to rows where `member_column = <caller's member id>`; `INSERT` forces `member_column` to the caller.
+- Adults: unrestricted by default. Set `"adults_bypass": false` to restrict adults too (e.g. each adult only sees their own rows).
+- Add `"bypass_group_setting": { "settings_table": "settings", "settings_key": "board_group_id" }` to give members of a configurable hub group (e.g. "board", "admins") unrestricted access regardless of `adults_bypass`.
+- Add `"insert_privileged_only": true` (requires `bypass_group_setting`) to block `INSERT` for everyone except the privileged group — returns 403 for all other callers regardless of adult status. SELECT/UPDATE/DELETE are unaffected.
+
+Example: piggy-bank `piggy_banks`/`transactions` — a child only sees their own bank/transactions; adults (parents) see everyone's.
+
+#### `owner_only_with_fk_check` — like `owner_only`, but the row references another owned row
+
+```json
+{
+  "kind": "owner_only_with_fk_check",
+  "member_column": "member_id",
+  "fk_column": "bank_id",
+  "fk_table": "piggy_banks",
+  "fk_member_column": "member_id"
+}
+```
+
+Same as `owner_only`, plus on `INSERT`/`UPDATE` the hub verifies the
+referenced `fk_table` row (by `fk_column` -> `fk_table.id`) is owned by the
+same member via `fk_table.fk_member_column` — prevents a child from writing
+a transaction against another member's bank by guessing its id.
+
+#### `owner_or_visibility` — a row is owned by one member but may be shared
+
+```json
+{
+  "kind": "owner_or_visibility",
+  "member_column": "owner_id",
+  "visibility_column": "visibility",
+  "everyone_values": ["everyone"],
+  "adult_values": ["adults", "everyone"],
+  "write_owner_only": false,
+  "bypass_group_setting": { "settings_table": "settings", "settings_key": "committee_group_id" },
+  "privileged_values": ["private"]
+}
+```
+
+- `SELECT`: a row is visible if `member_column = <caller>` OR
+  `visibility_column` is in `everyone_values` (plus `adult_values` if the
+  caller is an adult, plus `privileged_values` if the caller is privileged
+  via `bypass_group_setting`).
+- `UPDATE`/`DELETE`: privileged callers can always write any row. Adults can
+  write any row **unless** `write_owner_only: true`, in which case adults
+  (like everyone else) are restricted to `member_column = <caller>`.
+- `INSERT`: always forces `member_column` to the caller — you own what you create.
+- Add `"insert_privileged_only": true` (requires `bypass_group_setting`) to block `INSERT` for everyone except the privileged group — returns 403 for all other callers regardless of adult status. The column is still forced to the caller for privileged inserts. SELECT/UPDATE/DELETE are unaffected by this flag.
+
+Example: streaks `streaks` (`owner_id`/`visibility` in `private`/`adults`/`everyone`); architectural-review `requests` (`submitted_by`/`visibility` in `public`/`private`, with the committee group privileged to see `private` requests and decide on any request); document-library `documents` (`created_by`/`visibility`, everyone reads, only board group may insert).
+
+#### `adult_only` — entire table restricted to adults
+
+```json
+{ "kind": "adult_only" }
+```
+
+Every operation throws `403` for non-adult callers; adults are unrestricted.
+Use for tables with no per-row ownership at all (e.g. shared account
+balances, fund snapshots).
+
+#### `couple_scoped` — visible/writable by a member and their configured partner
+
+```json
+{
+  "kind": "couple_scoped",
+  "self_column": "author_id",
+  "participant_columns": ["author_id", "recipient_id"],
+  "partner_table": "partner_config",
+  "partner_member_column": "member_id",
+  "partner_id_column": "partner_id"
+}
+```
+
+A row is visible/writable if any of `participant_columns` equals the
+caller's id or their configured partner's id (looked up from
+`partner_table`). `INSERT` forces `self_column` to the caller and rejects
+any `participant_columns` value that isn't the caller or their partner.
+Assumes exactly one partner per member — not for group/throuple apps.
+
+#### `inherit_visibility` — a child row's access follows its parent row
+
+For tables with no `member_id`/`visibility` of their own (votes, comments,
+activity logs, streak check-offs) whose access should mirror a parent row
+they reference via foreign key:
+
+```json
+{
+  "kind": "inherit_visibility",
+  "fk_column": "request_id",
+  "parent_table": "requests",
+  "writer_column": "voter_id"
+}
+```
+
+- `parent_table` (unprefixed) must itself have an `owner_only`,
+  `owner_only_with_fk_check`, or `owner_or_visibility` row policy — its
+  visibility/ownership rules (and `bypass_group_setting`/`privileged_values`
+  if present) are reused for the child table.
+- `SELECT`: a child row is visible iff its parent row (matched via
+  `fk_column = parent.id`) is visible to the caller.
+- `INSERT`: forces `writer_column` to the caller, and rejects the insert
+  (`403`) if the referenced parent row isn't visible to the caller (e.g.
+  can't vote/comment/log on something you can't see).
+- `UPDATE`/`DELETE`: privileged callers (per the parent policy's
+  `bypass_group_setting`/adult-bypass) are unrestricted (e.g. cascade-delete
+  when the parent is deleted); everyone else is restricted to rows where
+  `writer_column = <caller>`.
+- Add `"insert_privileged_only": true` to block `INSERT` for everyone except
+  the privileged group inherited from the parent policy's `bypass_group_setting`.
+  Returns 403 for all other callers. Useful when only a designated group should
+  be able to create child rows (e.g. only the board uploads document versions).
+
+Examples: architectural-review `votes`/`comments` inherit from `requests`;
+officer-elections-style "any visible member can check off a group streak"
+(streaks `streak_logs` inherits from `streaks`); violation-tracking
+`activity` inherits from `violations` (homeowners see/log activity only on
+their own violations; board members see/log on any violation); document-library
+`document_versions` inherits from `documents` with `insert_privileged_only: true`
+(only the board may upload new versions).
+
+### Choosing a policy kind
+
+| Your table looks like... | Use |
+|---|---|
+| One row per member, only that member (and maybe adults) should see it | `owner_only` |
+| Like the above, but the row references another owned row (e.g. a transaction against a bank) | `owner_only_with_fk_check` |
+| A row can be private, shared with adults, or shared with everyone | `owner_or_visibility` |
+| Table-wide, adults-only data (account balances, fund totals) | `adult_only` |
+| Shared between exactly two partnered members | `couple_scoped` |
+| Votes/comments/logs/check-offs whose visibility should match a parent record | `inherit_visibility` |
+| Anonymous data with no per-row ownership at all (e.g. cast ballots, separate from a "have voted" receipt table) | no policy — but consider whether the schema itself leaks identity via a join (see officer-elections `oe_ballots`/`oe_ballot_receipts` for the pattern of splitting a "did X vote" receipt from anonymous ballot content) |
+| Everyone can read, but only a specific group may INSERT (e.g. board-managed docs) | `owner_or_visibility` with `everyone_values`, `write_owner_only: true`, and `insert_privileged_only: true` |
+| Child rows where only a privileged group may create them (e.g. document versions) | `inherit_visibility` with `insert_privileged_only: true` |
+
+### `bypass_group_setting`
+
+```json
+"bypass_group_setting": { "settings_table": "settings", "settings_key": "board_group_id" }
+```
+
+Grants unrestricted access to members of a hub group whose id is stored in
+this app's own `settings_table` under `settings_key`. Requires your app to
+have a `settings` table (key/value, like
+`app_violation_tracking__settings`) and a settings UI where an admin/adult
+picks a hub group (e.g. "Board", "Committee") to designate as privileged.
+If the setting is unset, no one gets this bypass — only the
+`adults_bypass`/`adult_values` rules apply.
+
+### Verifying your row_policies
+
+`node build.mjs` runs manifest validation, including `row_policies` — it
+will catch invalid `kind`, missing required fields, bad identifiers, and
+`inherit_visibility.parent_table` not having a compatible parent policy.
+This catches schema mistakes before install, but does **not** test the
+actual SQL rewriting — when in doubt, check
+`packages/hub/__tests__/unit/cloudflare-row-policy.test.ts` in the hub repo
+for worked examples per policy kind.
 
 ## AI access (MCP)
 
