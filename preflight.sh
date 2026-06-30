@@ -4,11 +4,12 @@
 # Hook:   git config core.hooksPath .githooks  (once per clone)
 set -e
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
 echo ""
 echo "▶ Build…"
-node "$ROOT/build.mjs"
+zsh -lc 'source ~/.zshrc >/dev/null 2>&1 || true; node build.mjs'
 echo ""
 echo "▶ Tests…"
-npm test --prefix "$ROOT"
+zsh -lc 'source ~/.zshrc >/dev/null 2>&1 || true; npm test'
 echo ""
 echo "✓ Preflight passed"
