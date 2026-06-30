@@ -176,6 +176,7 @@ import { hubConfirm } from "/hub-sdk.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
 const DB = window.__DB_URL ?? "";
+const EVENTS = window.__EVENTS_URL ?? "";
 const ME = window.__CURRENT_MEMBER ?? null;
 const APP_ID = window.__APP_ID ?? "donations";
 
@@ -211,6 +212,8 @@ let members = [];
 let items = [];
 let votes = [];
 let comments = [];
+let countByTab = { active: 0, let_go: 0, unsure: 0, archive: 0 };
+let totalForTab = 0;
 let activeTab = "active";
 let modalEl = null;
 let toastTimer = null;
@@ -255,9 +258,25 @@ async function dbRun(sql, params = []) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sql, params }),
     });
-    return await res.json();
+    const data = await res.json();
+    if (!res.ok || data?.error) throw new Error(data?.error || "Database request failed");
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function publishEvent(type, subjectId, payload = {}) {
+  if (!EVENTS) return;
+  try {
+    await fetch(EVENTS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, subject_id: subjectId, payload }),
+    });
   } catch {
-    return { rows: [] };
+    // Event publishing should not block the user's item workflow.
   }
 }
 
@@ -314,14 +333,65 @@ async function loadData() {
     comments = [
       { id: "c1", item_id: "demo-item-1", member_id: "demo-2", kind: "comment", body: "I would use it if it lived upstairs.", created_at: base },
     ];
+    countByTab = {
+      active: items.filter(i => i.status === "active").length,
+      let_go: items.filter(i => i.status === "let_go").length,
+      unsure: items.filter(i => i.status === "unsure").length,
+      archive: items.filter(i => ["keep", "archived"].includes(i.status)).length,
+    };
+    totalForTab = activeTab === "reports" ? 0 : itemsForTab().length;
     return;
   }
-  const [itemRes, voteRes, commentRes] = await Promise.all([
-    dbRun("SELECT * FROM app_donations__items ORDER BY updated_at DESC"),
-    dbRun("SELECT * FROM app_donations__votes ORDER BY updated_at DESC"),
-    dbRun("SELECT * FROM app_donations__comments ORDER BY created_at ASC"),
-  ]);
+  const countRes = await dbRun("SELECT status, COUNT(*) AS count FROM app_donations__items GROUP BY status");
+  const statusCounts = Object.fromEntries((countRes.rows ?? []).map(row => [row.status, Number(row.count || 0)]));
+  countByTab = {
+    active: statusCounts.active ?? 0,
+    let_go: statusCounts.let_go ?? 0,
+    unsure: statusCounts.unsure ?? 0,
+    archive: (statusCounts.keep ?? 0) + (statusCounts.archived ?? 0),
+  };
+
+  let itemRes;
+  if (activeTab === "reports") {
+    const clauses = ["disposition_action <> ''", "disposition_at <> ''"];
+    const params = [];
+    if (reportState.from) { clauses.push("disposition_at >= ?"); params.push(reportState.from); }
+    if (reportState.to) { clauses.push("disposition_at <= ?"); params.push(reportState.to); }
+    if (reportState.action !== "all") { clauses.push("disposition_action = ?"); params.push(reportState.action); }
+    itemRes = await dbRun(
+      `SELECT * FROM app_donations__items WHERE ${clauses.join(" AND ")} ORDER BY disposition_at DESC, decided_at DESC LIMIT 500`,
+      params
+    );
+    totalForTab = itemRes.rows?.length ?? 0;
+  } else {
+    const page = Math.max(pageByTab[activeTab] ?? 1, 1);
+    const offset = (page - 1) * PAGE_SIZE;
+    if (activeTab === "archive") {
+      totalForTab = countByTab.archive;
+      itemRes = await dbRun(
+        "SELECT * FROM app_donations__items WHERE status IN ('keep', 'archived') ORDER BY updated_at DESC LIMIT ? OFFSET ?",
+        [PAGE_SIZE, offset]
+      );
+    } else {
+      totalForTab = countByTab[activeTab] ?? 0;
+      itemRes = await dbRun(
+        "SELECT * FROM app_donations__items WHERE status = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?",
+        [activeTab, PAGE_SIZE, offset]
+      );
+    }
+  }
   items = itemRes.rows ?? [];
+  const ids = items.map(i => i.id);
+  if (!ids.length) {
+    votes = [];
+    comments = [];
+    return;
+  }
+  const placeholders = ids.map(() => "?").join(",");
+  const [voteRes, commentRes] = await Promise.all([
+    dbRun(`SELECT * FROM app_donations__votes WHERE item_id IN (${placeholders}) ORDER BY updated_at DESC`, ids),
+    dbRun(`SELECT * FROM app_donations__comments WHERE item_id IN (${placeholders}) ORDER BY created_at ASC`, ids),
+  ]);
   votes = voteRes.rows ?? [];
   comments = commentRes.rows ?? [];
 }
@@ -350,9 +420,9 @@ function render() {
   const me = ME?.name ? `Signed in as ${ME.name}` : "Demo mode";
   document.getElementById("who").textContent = me;
   const counts = {
-    active: items.filter(i => i.status === "active").length,
-    let_go: items.filter(i => i.status === "let_go").length,
-    unsure: items.filter(i => i.status === "unsure").length,
+    active: DB ? countByTab.active : items.filter(i => i.status === "active").length,
+    let_go: DB ? countByTab.let_go : items.filter(i => i.status === "let_go").length,
+    unsure: DB ? countByTab.unsure : items.filter(i => i.status === "unsure").length,
   };
   if (activeTab === "reports") {
     document.getElementById("root").innerHTML = `
@@ -364,10 +434,11 @@ function render() {
     return;
   }
   const allVisible = itemsForTab();
-  const totalPages = Math.max(1, Math.ceil(allVisible.length / PAGE_SIZE));
+  const totalItems = DB ? totalForTab : allVisible.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
   pageByTab[activeTab] = Math.min(Math.max(pageByTab[activeTab] ?? 1, 1), totalPages);
   const page = pageByTab[activeTab];
-  const visible = allVisible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const visible = DB ? allVisible : allVisible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   document.getElementById("root").innerHTML = `
     <div class="tabs">
       ${tabs.map(([key, label]) => `<button class="tab ${activeTab === key ? "active" : ""}" onclick="setTab('${key}')">${label}</button>`).join("")}
@@ -377,7 +448,7 @@ function render() {
       <div class="stat"><strong>${counts.let_go}</strong><span>Let go</span></div>
       <div class="stat"><strong>${counts.unsure}</strong><span>Purge-atory</span></div>
     </div>
-    ${allVisible.length ? `${visible.map(renderItem).join("")}${renderPager(allVisible.length, page, totalPages)}` : renderEmpty()}
+    ${totalItems ? `${visible.map(renderItem).join("")}${renderPager(totalItems, page, totalPages)}` : renderEmpty()}
   `;
 }
 
@@ -462,7 +533,6 @@ function renderEmpty() {
 }
 
 function renderItem(item) {
-  const id = esc(item.id);
   const itemVotes = votes.filter(v => v.item_id === item.id);
   const mine = itemVotes.find(v => v.member_id === myId());
   const expanded = isExpanded(item);
@@ -472,11 +542,11 @@ function renderItem(item) {
   }).filter(Boolean).join(" | ") || "No votes yet";
   const itemComments = comments.filter(c => c.item_id === item.id);
   return `
-    <article class="item ${expanded ? "" : "collapsed"}">
+    <article class="item ${expanded ? "" : "collapsed"}" data-item-id="${esc(item.id)}">
       <div class="item-main">
         <div class="item-top">
           <div>
-            <button class="item-title-btn" onclick="toggleItem('${id}')">
+            <button class="item-title-btn" data-action="toggle-item">
               <div class="item-title-line">
                 <span class="chevron">${expanded ? "▾" : "▸"}</span>
                 <h2>${esc(item.name)}</h2>
@@ -510,8 +580,8 @@ function renderItem(item) {
               <span class="subtle">${esc(tally)}</span>
             </div>
             <div class="vote-row">
-              ${["keep", "let_go", "unsure"].map(vote => `<button class="btn btn-sm vote ${mine?.vote === vote ? "active" : ""}" onclick="castVote('${id}', '${vote}')">${statusLabels[vote]}</button>`).join("")}
-              <button class="btn btn-sm btn-ghost edit-link" onclick="openItemModal('${id}')">Edit details</button>
+              ${["keep", "let_go", "unsure"].map(vote => `<button class="btn btn-sm vote ${mine?.vote === vote ? "active" : ""}" data-action="cast-vote" data-vote="${vote}">${statusLabels[vote]}</button>`).join("")}
+              <button class="btn btn-sm btn-ghost edit-link" data-action="edit-item">Edit details</button>
             </div>
             ${renderAdultControls(item)}
           </div>
@@ -520,8 +590,8 @@ function renderItem(item) {
       <div class="comments">
         ${itemComments.length ? itemComments.map(renderComment).join("") : `<div class="subtle">No comments yet.</div>`}
         <div class="comment-form">
-          <input id="comment-${item.id}" placeholder="Add a reason, memory, repair note, or concern" />
-          <button class="btn btn-sm btn-primary" onclick="addComment('${item.id}')">Add</button>
+          <input data-role="comment-input" placeholder="Add a reason, memory, repair note, or concern" />
+          <button class="btn btn-sm btn-primary" data-action="add-comment">Add</button>
         </div>
       </div>
     </article>
@@ -542,7 +612,6 @@ function renderComment(comment) {
 }
 
 function renderAdultControls(item) {
-  const id = esc(item.id);
   if (!isAdult()) {
     return `<div class="adult-note" style="margin-top:12px">Adults finalize decisions and delete items.</div>`;
   }
@@ -551,7 +620,7 @@ function renderAdultControls(item) {
   if (!canFinalize && !canRecordAction) {
     return `
       <div class="action-head" style="margin-top:12px"><span class="action-label">Manage</span></div>
-      <div class="decision-row"><button class="btn btn-sm danger edit-link" onclick="deleteItem('${id}')">Delete</button></div>
+      <div class="decision-row"><button class="btn btn-sm danger edit-link" data-action="delete-item">Delete</button></div>
     `;
   }
   return `
@@ -559,11 +628,11 @@ function renderAdultControls(item) {
       <span class="action-label">${canFinalize ? "Finalize decision" : "Manage action"}</span>
     </div>
     <div class="decision-row">
-      ${canFinalize ? `<button class="btn btn-sm finalize" onclick="finalizeItem('${id}', 'keep')">Keep</button>
-      <button class="btn btn-sm finalize" onclick="finalizeItem('${id}', 'let_go')">Let go</button>
-      <button class="btn btn-sm finalize" onclick="finalizeItem('${id}', 'unsure')">Purge-atory</button>` : ""}
-      ${canRecordAction ? `<button class="btn btn-sm btn-ghost" onclick="openDispositionModal('${id}')">${item.disposition_action ? "Update action" : "Record action"}</button>` : ""}
-      <button class="btn btn-sm danger edit-link" onclick="deleteItem('${id}')">Delete</button>
+      ${canFinalize ? `<button class="btn btn-sm finalize" data-action="finalize-item" data-status="keep">Keep</button>
+      <button class="btn btn-sm finalize" data-action="finalize-item" data-status="let_go">Let go</button>
+      <button class="btn btn-sm finalize" data-action="finalize-item" data-status="unsure">Purge-atory</button>` : ""}
+      ${canRecordAction ? `<button class="btn btn-sm btn-ghost" data-action="open-disposition">${item.disposition_action ? "Update action" : "Record action"}</button>` : ""}
+      <button class="btn btn-sm danger edit-link" data-action="delete-item">Delete</button>
     </div>
   `;
 }
@@ -600,25 +669,29 @@ function repairFact(item) {
   return `<div class="fact"><span>Repair cost</span><strong>${repairCost}</strong></div>`;
 }
 
-window.setTab = function(key) {
+window.setTab = async function(key) {
   activeTab = key;
   pageByTab[key] = pageByTab[key] ?? 1;
+  await loadData();
   render();
 };
 
-window.setPage = function(page) {
+window.setPage = async function(page) {
   pageByTab[activeTab] = page;
+  await loadData();
   render();
 };
 
-window.setReportFilter = function(field, value) {
+window.setReportFilter = async function(field, value) {
   reportState = { ...reportState, [field]: value };
+  await loadData();
   render();
 };
 
-window.resetReportYear = function() {
+window.resetReportYear = async function() {
   const year = new Date().getFullYear();
   reportState = { ...reportState, from: `${year}-01-01`, to: `${year}-12-31` };
+  await loadData();
   render();
 };
 
@@ -666,14 +739,14 @@ window.downloadReportCsv = function() {
   URL.revokeObjectURL(url);
 };
 
-window.toggleItem = function(itemId) {
+function toggleItem(itemId) {
   const item = items.find(i => i.id === itemId);
   if (!item) return;
   expandedById[itemId] = !isExpanded(item);
   render();
-};
+}
 
-window.castVote = async function(itemId, vote) {
+async function castVote(itemId, vote) {
   const now = nowIso();
   const existing = votes.find(v => v.item_id === itemId && v.member_id === myId());
   if (DB) {
@@ -688,11 +761,11 @@ window.castVote = async function(itemId, vote) {
   } else {
     votes = [{ id: crypto.randomUUID(), item_id: itemId, member_id: myId(), vote, note: "", created_at: now, updated_at: now }, ...votes];
   }
+  if (DB) await loadData();
   render();
-};
+}
 
-window.addComment = async function(itemId) {
-  const input = document.getElementById(`comment-${itemId}`);
+async function addComment(itemId, input) {
   const body = input?.value.trim();
   if (!body) return;
   const row = { id: crypto.randomUUID(), item_id: itemId, member_id: myId(), kind: "comment", body, created_at: nowIso() };
@@ -702,10 +775,11 @@ window.addComment = async function(itemId) {
   }
   comments = [...comments, row];
   input.value = "";
+  if (DB) await loadData();
   render();
-};
+}
 
-window.finalizeItem = async function(itemId, status) {
+async function finalizeItem(itemId, status) {
   if (!isAdult()) {
     toast("Only adults can finalize decisions.");
     return;
@@ -722,14 +796,16 @@ window.finalizeItem = async function(itemId, status) {
       [status, note, reevaluate, myId(), now, itemId]
     );
     await addActivity(itemId, "decision", status);
+    await publishEvent("donations.decision_made", itemId, { status, decided_by: myId() });
   }
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = status === "keep" ? "archive" : status;
   toast(status === "unsure" ? "Sent to Purge-atory for review." : `Moved to ${statusLabels[status]}.`);
+  if (DB) await loadData();
   render();
-};
+}
 
-window.deleteItem = async function(itemId) {
+async function deleteItem(itemId) {
   if (!isAdult()) {
     toast("Only adults can delete items.");
     return;
@@ -744,9 +820,6 @@ window.deleteItem = async function(itemId) {
   });
   if (!ok) return;
   if (DB) {
-    await dbRun("DELETE FROM app_donations__comments WHERE item_id = ?", [itemId]);
-    await dbRun("DELETE FROM app_donations__votes WHERE item_id = ?", [itemId]);
-    await dbRun("DELETE FROM app_donations__activity WHERE item_id = ?", [itemId]);
     await dbRun("DELETE FROM app_donations__items WHERE id = ?", [itemId]);
   }
   items = items.filter(i => i.id !== itemId);
@@ -754,10 +827,11 @@ window.deleteItem = async function(itemId) {
   comments = comments.filter(c => c.item_id !== itemId);
   delete expandedById[itemId];
   toast("Item deleted.");
+  if (DB) await loadData();
   render();
-};
+}
 
-window.openDispositionModal = function(itemId) {
+function openDispositionModal(itemId) {
   if (!isAdult()) {
     toast("Only adults can record final actions.");
     return;
@@ -792,12 +866,12 @@ window.openDispositionModal = function(itemId) {
     <div class="field"><label>Notes</label><textarea id="f-disposition-note" placeholder="Where it went, receipt note, buyer, etc.">${esc(item.disposition_note ?? "")}</textarea></div>
     <div class="actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveDisposition('${esc(item.id)}')">Save action</button>
+      <button class="btn btn-primary" data-action="save-disposition" data-item-id="${esc(item.id)}">Save action</button>
     </div>
   `);
   document.getElementById("f-disposition-action")?.addEventListener("change", updateDonationReportField);
   updateDonationReportField();
-};
+}
 
 function updateDonationReportField() {
   const action = document.getElementById("f-disposition-action")?.value;
@@ -805,7 +879,7 @@ function updateDonationReportField() {
   if (field) field.style.display = action === "donated" ? "" : "none";
 }
 
-window.saveDisposition = async function(itemId) {
+async function saveDisposition(itemId) {
   if (!isAdult()) {
     toast("Only adults can record final actions.");
     return;
@@ -835,13 +909,15 @@ window.saveDisposition = async function(itemId) {
       ["archived", value, action, dispositionAt, note, myId(), reportable, now, itemId]
     );
     await addActivity(itemId, "disposition", action);
+    await publishEvent("donations.decision_made", itemId, { status: "archived", disposition_action: action, disposition_by: myId() });
   }
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = "archive";
   closeModal();
   toast("Action recorded and item archived.");
+  if (DB) await loadData();
   render();
-};
+}
 
 function openModal(html) {
   closeModal();
@@ -876,7 +952,7 @@ window.openItemModal = function(itemId = "") {
     <div class="field"><label>Why let it go?</label><textarea id="f-let-go">${esc(item?.let_go_reason ?? "")}</textarea></div>
     <div class="actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveItem('${esc(item?.id ?? "")}')">${item ? "Save" : "Add item"}</button>
+      <button class="btn btn-primary" data-action="save-item" data-item-id="${esc(item?.id ?? "")}">${item ? "Save" : "Add item"}</button>
     </div>
   `);
   document.getElementById("f-broken")?.addEventListener("change", updateRepairFields);
@@ -902,7 +978,7 @@ function updateRepairFields() {
   });
 }
 
-window.saveItem = async function(itemId = "") {
+async function saveItem(itemId = "") {
   const name = document.getElementById("f-name").value.trim();
   if (!name) {
     toast("Add an item name first.");
@@ -951,13 +1027,33 @@ window.saveItem = async function(itemId = "") {
         [row.id, row.name, row.category, row.location, row.photo_url, row.created_by, row.status, row.visibility, row.used_recently, row.broken_status, row.repair_possible, row.repair_cost_cents, row.estimated_value_cents, row.has_home, row.keep_reason, row.let_go_reason, row.decision_note, row.disposition_action, row.disposition_at, row.disposition_note, row.disposition_by, row.donation_reportable, row.reevaluate_on, row.decided_by, row.decided_at, row.created_at, row.updated_at]
       );
       await addActivity(row.id, "created", row.name);
+      await publishEvent("donations.item_added", row.id, { name: row.name, created_by: myId() });
     }
   }
   items = itemId ? items.map(i => i.id === itemId ? row : i) : [row, ...items];
   activeTab = row.status === "keep" ? "archive" : row.status;
   closeModal();
+  if (DB) await loadData();
   render();
-};
+}
+
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+  const article = button.closest("[data-item-id]");
+  const itemId = button.dataset.itemId ?? article?.dataset.itemId ?? "";
+  const action = button.dataset.action;
+  if (action === "toggle-item") return toggleItem(itemId);
+  const run = promise => promise.catch(error => toast(error?.message || "That change could not be saved."));
+  if (action === "cast-vote") return void run(castVote(itemId, button.dataset.vote));
+  if (action === "edit-item") return openItemModal(itemId);
+  if (action === "add-comment") return void run(addComment(itemId, article?.querySelector('[data-role="comment-input"]')));
+  if (action === "finalize-item") return void run(finalizeItem(itemId, button.dataset.status));
+  if (action === "delete-item") return void run(deleteItem(itemId));
+  if (action === "open-disposition") return openDispositionModal(itemId);
+  if (action === "save-disposition") return void run(saveDisposition(itemId));
+  if (action === "save-item") return void run(saveItem(itemId));
+});
 
 function toast(message) {
   clearTimeout(toastTimer);
@@ -970,9 +1066,14 @@ function toast(message) {
 }
 
 (async function init() {
-  await loadMembers();
-  await loadData();
-  render();
+  try {
+    await loadMembers();
+    await loadData();
+    render();
+  } catch (error) {
+    console.error(error);
+    document.getElementById("root").innerHTML = `<div class="empty"><strong>Unable to load items.</strong><span class="subtle">${esc(error?.message || "Please try again.")}</span></div>`;
+  }
 })();
 </script>
 </body>

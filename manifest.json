@@ -23,13 +23,26 @@
       "member_column": "created_by",
       "visibility_column": "visibility",
       "everyone_values": ["household"],
-      "write_owner_only": false
+      "write_owner_only": false,
+      "delete_adult_only": true,
+      "update_forbidden_columns": [
+        "status",
+        "decision_note",
+        "disposition_action",
+        "disposition_at",
+        "disposition_note",
+        "disposition_by",
+        "donation_reportable",
+        "reevaluate_on",
+        "decided_by",
+        "decided_at"
+      ]
     },
     "votes": {
-      "kind": "owner_only",
-      "member_column": "member_id",
-      "adults_bypass": true,
-      "endpoint_writes_only": true
+      "kind": "inherit_visibility",
+      "parent_table": "items",
+      "fk_column": "item_id",
+      "writer_column": "member_id"
     },
     "comments": {
       "kind": "inherit_visibility",
@@ -38,19 +51,22 @@
       "writer_column": "member_id"
     },
     "activity": {
-      "kind": "endpoint_only",
-      "read": "everyone"
+      "kind": "inherit_visibility",
+      "parent_table": "items",
+      "fk_column": "item_id",
+      "writer_column": "actor_id"
     }
   },
   "publishes": [
     "donations.item_added",
-    "donations.decision_made",
-    "donations.reevaluation_due"
+    "donations.decision_made"
   ],
+  "publish_acls": {
+    "donations.decision_made": { "require_role": "adult" }
+  },
   "alert_on": [
     "donations.item_added",
-    "donations.decision_made",
-    "donations.reevaluation_due"
+    "donations.decision_made"
   ],
   "nav": { "label": "Let Go" },
   "widget": {
