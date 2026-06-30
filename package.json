@@ -1,7 +1,7 @@
 {
-  "name": "chickadee-app-template",
+  "name": "chickadee-let-go",
   "version": "1.0.0",
-  "description": "Template for building Chickadee Bandit marketplace apps",
+  "description": "Household keep, let-go, and re-evaluate decisions for Chickadee Bandit",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",

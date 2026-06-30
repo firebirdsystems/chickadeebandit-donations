@@ -1,21 +1,69 @@
 {
-  "id": "my-app",
-  "name": "My App",
+  "id": "donations",
+  "name": "Let Go",
   "version": "1.0.0",
-  "description": "A short description of what this app does.",
+  "description": "A household decision board for deciding whether to keep, let go of, repair, or re-evaluate items.",
   "entrypoint": "index.html",
   "runtime": "static",
-  "category": "general",
-  "tags": [],
+  "category": "family",
+  "tags": ["let-go", "decluttering", "household", "decisions", "items"],
   "data_access": {
-    "reads": [],
+    "reads": ["family.members"],
     "writes": []
   },
   "permissions": {
     "default_audience": "everyone",
     "requires_approval": false
   },
-  "storage": "none",
-  "nav": { "label": "My App" },
-  "icon": "🔧"
+  "storage": "db",
+  "db_encryption": "off",
+  "row_policies": {
+    "items": {
+      "kind": "owner_or_visibility",
+      "member_column": "created_by",
+      "visibility_column": "visibility",
+      "everyone_values": ["household"],
+      "write_owner_only": false
+    },
+    "votes": {
+      "kind": "owner_only",
+      "member_column": "member_id",
+      "adults_bypass": true,
+      "endpoint_writes_only": true
+    },
+    "comments": {
+      "kind": "inherit_visibility",
+      "parent_table": "items",
+      "fk_column": "item_id",
+      "writer_column": "member_id"
+    },
+    "activity": {
+      "kind": "endpoint_only",
+      "read": "everyone"
+    }
+  },
+  "publishes": [
+    "donations.item_added",
+    "donations.decision_made",
+    "donations.reevaluation_due"
+  ],
+  "alert_on": [
+    "donations.item_added",
+    "donations.decision_made",
+    "donations.reevaluation_due"
+  ],
+  "nav": { "label": "Let Go" },
+  "widget": {
+    "label": "Let Go",
+    "size": "small"
+  },
+  "resource_limits": {
+    "max_db_bytes": 52428800
+  },
+  "icon": "📦",
+  "ai_access": {
+    "allowed": true,
+    "mode": "read",
+    "db_exports": ["active_items", "let_go_queue", "purgeatory_items", "action_report", "donation_report"]
+  }
 }
