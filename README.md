@@ -10,6 +10,8 @@ Any household member can add an item, vote on what should happen to it, and leav
 - **Let go**: the item appears in the let-go queue. Adults can later record whether it was donated, sold, recycled, discarded, given away, or handled another way.
 - **Purge-atory**: the item is marked unsure with a six-month re-evaluation date.
 
+Items are moved to **Archived** if the are marked for Keep or are officially marked as donated/trashed/etc.
+
 Saving a follow-through action archives the item. Recorded actions can be reviewed in the in-app Reports tab or exported through the `action_report` query. Donated items can be marked reportable and exported through the `donation_report` query with their estimated values.
 
 ## Development
