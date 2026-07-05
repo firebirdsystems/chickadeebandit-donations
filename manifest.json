@@ -42,7 +42,11 @@
       "kind": "inherit_visibility",
       "parent_table": "items",
       "fk_column": "item_id",
-      "writer_column": "member_id"
+      "writer_column": "member_id",
+      "unique_per_member": {
+        "member_column": "member_id",
+        "scope_columns": ["item_id"]
+      }
     },
     "comments": {
       "kind": "inherit_visibility",
