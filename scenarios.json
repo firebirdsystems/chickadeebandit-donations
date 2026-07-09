@@ -1,0 +1,36 @@
+{
+  "scenarios": [
+    {
+      "name": "a member can vote once per item; decision columns are adult-only",
+      "members": { "owner": "adult", "voter": "adult", "kid": "child" },
+      "steps": [
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_donations__items (id, name, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+          "params": ["item1", "Old blender", "{{owner}}", "2026-01-01T00:00:00Z", "2026-01-01T00:00:00Z"]
+        },
+        {
+          "action": "db",
+          "as": "voter",
+          "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+          "params": ["v1", "item1", "{{voter}}", "let_go", "2026-01-02T00:00:00Z", "2026-01-02T00:00:00Z"],
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "voter",
+          "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+          "params": ["v2", "item1", "{{voter}}", "keep", "2026-01-03T00:00:00Z", "2026-01-03T00:00:00Z"],
+          "expect": { "status": 403 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "UPDATE app_donations__items SET status = 'keep' WHERE id = ?",
+          "params": ["item1"],
+          "expect": { "status": 403, "errorIncludes": "adult" }
+        }
+      ]
+    }
+  ]
+}

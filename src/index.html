@@ -173,6 +173,13 @@
 
 <script type="module">
 import { hubConfirm } from "/hub-sdk.js";
+import {
+  statusLabels, dispositionLabels,
+  esc, money, initial, colorFor, todayPlusMonths,
+  memberName as memberNameOf, isAdultMember,
+  itemsForTab as itemsForTabOf, reportRows as reportRowsOf, reportCsv as reportCsvOf,
+  answerLabel, conditionLabel,
+} from "./logic.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
 const DB = window.__DB_URL ?? "";
@@ -180,21 +187,6 @@ const EVENTS = window.__EVENTS_URL ?? "";
 const ME = window.__CURRENT_MEMBER ?? null;
 const APP_ID = window.__APP_ID ?? "donations";
 
-const statusLabels = {
-  active: "Deciding",
-  keep: "Keep",
-  let_go: "Let go",
-  unsure: "Purge-atory",
-  archived: "Archived",
-};
-const dispositionLabels = {
-  donated: "Donated",
-  sold: "Sold",
-  recycled: "Recycled",
-  discarded: "Discarded",
-  given_away: "Given away",
-  other: "Other",
-};
 const tabs = [
   ["active", "Deciding"],
   ["let_go", "Let go"],
@@ -223,30 +215,8 @@ const thisYear = new Date().getFullYear();
 let reportState = { from: `${thisYear}-01-01`, to: `${thisYear}-12-31`, action: "all" };
 const PAGE_SIZE = 10;
 
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
-}
-function money(cents) {
-  const n = Number(cents || 0);
-  return n > 0 ? `$${(n / 100).toFixed(n % 100 === 0 ? 0 : 2)}` : "Not set";
-}
-function memberName(id) { return members.find(m => m.id === id)?.name ?? "Someone"; }
-function isAdult() {
-  const me = ME ?? members.find(m => m.id === myId());
-  return !!me && (me.role === "adult" || me.role === "admin");
-}
-function initial(name) { return String(name || "?").trim().slice(0, 1).toUpperCase(); }
-function colorFor(id) {
-  const colors = ["#1f5f4a", "#7c3aed", "#0369a1", "#b45309", "#be123c", "#0f766e"];
-  let hash = 0;
-  for (const ch of String(id || "")) hash = ((hash << 5) - hash) + ch.charCodeAt(0);
-  return colors[Math.abs(hash) % colors.length];
-}
-function todayPlusMonths(months) {
-  const d = new Date();
-  d.setMonth(d.getMonth() + months);
-  return d.toISOString().slice(0, 10);
-}
+function memberName(id) { return memberNameOf(members, id); }
+function isAdult() { return isAdultMember(ME ?? members.find(m => m.id === myId())); }
 function nowIso() { return new Date().toISOString(); }
 function myId() { return ME?.id ?? "demo-1"; }
 
@@ -342,8 +312,8 @@ async function loadData() {
     totalForTab = activeTab === "reports" ? 0 : itemsForTab().length;
     return;
   }
-  const countRes = await dbRun("SELECT status, COUNT(*) AS count FROM app_donations__items GROUP BY status");
-  const statusCounts = Object.fromEntries((countRes.rows ?? []).map(row => [row.status, Number(row.count || 0)]));
+  const countRes = await dbRun("SELECT status, COUNT(*) AS n FROM app_donations__items GROUP BY status");
+  const statusCounts = Object.fromEntries((countRes.rows ?? []).map(row => [row.status, Number(row.n || 0)]));
   countByTab = {
     active: statusCounts.active ?? 0,
     let_go: statusCounts.let_go ?? 0,
@@ -404,13 +374,7 @@ async function addActivity(itemId, action, detail = "") {
   );
 }
 
-function itemsForTab() {
-  if (activeTab === "archive") {
-    return items.filter(i => ["keep", "archived"].includes(i.status));
-  }
-  if (activeTab === "reports") return [];
-  return items.filter(i => i.status === activeTab);
-}
+function itemsForTab() { return itemsForTabOf(items, activeTab); }
 function isExpanded(item) {
   if (Object.prototype.hasOwnProperty.call(expandedById, item.id)) return expandedById[item.id];
   return activeTab === "active";
@@ -452,15 +416,7 @@ function render() {
   `;
 }
 
-function reportRows() {
-  const from = reportState.from || "0000-01-01";
-  const to = reportState.to || "9999-12-31";
-  return items
-    .filter(i => i.disposition_action && i.disposition_at)
-    .filter(i => reportState.action === "all" || i.disposition_action === reportState.action)
-    .filter(i => i.disposition_at >= from && i.disposition_at <= to)
-    .sort((a, b) => String(b.disposition_at).localeCompare(String(a.disposition_at)));
-}
+function reportRows() { return reportRowsOf(items, reportState); }
 
 function renderReports() {
   const rows = reportRows();
@@ -656,13 +612,6 @@ function renderDisposition(item) {
   `;
 }
 
-function answerLabel(value) {
-  return ({ yes: "Yes", no: "No", maybe: "Maybe", unknown: "Unknown", working: "Working", broken: "Broken" })[value] ?? "Unknown";
-}
-function conditionLabel(item) {
-  if (item.broken_status === "broken") return `Broken, repair ${answerLabel(item.repair_possible).toLowerCase()}`;
-  return answerLabel(item.broken_status);
-}
 function repairFact(item) {
   if (item.broken_status !== "broken") return "";
   const repairCost = ["yes", "maybe"].includes(item.repair_possible) ? money(item.repair_cost_cents) : "Not applicable";
@@ -695,23 +644,7 @@ window.resetReportYear = async function() {
   render();
 };
 
-function reportCsv() {
-  const header = ["Item", "Category", "Action", "Date", "Estimated Value", "Reportable Donation", "Notes"];
-  const lines = reportRows().map(item => [
-    item.name,
-    item.category || "",
-    dispositionLabels[item.disposition_action] ?? item.disposition_action,
-    item.disposition_at,
-    (Number(item.estimated_value_cents || 0) / 100).toFixed(2),
-    item.donation_reportable === "yes" ? "yes" : "no",
-    item.disposition_note || "",
-  ]);
-  return [header, ...lines].map(row => row.map(csvCell).join(",")).join("\n");
-}
-
-function csvCell(value) {
-  return `"${String(value ?? "").replace(/"/g, '""')}"`;
-}
+function reportCsv() { return reportCsvOf(items, reportState); }
 
 window.copyReportCsv = async function() {
   const csv = reportCsv();
