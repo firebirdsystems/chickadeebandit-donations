@@ -1,7 +1,7 @@
 {
   "id": "donations",
   "name": "Let Go",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A household decision board for deciding whether to keep, let go of, repair, or re-evaluate items.",
   "entrypoint": "index.html",
   "runtime": "static",
@@ -25,27 +25,28 @@
       "everyone_values": ["household"],
       "write_owner_only": false,
       "delete_adult_only": true,
-      "update_forbidden_columns": [
-        "status",
-        "decision_note",
-        "disposition_action",
-        "disposition_at",
-        "disposition_note",
-        "disposition_by",
-        "donation_reportable",
-        "reevaluate_on",
-        "decided_by",
-        "decided_at"
-      ]
+      "column_write_acls": {
+        "status": { "writable_by": ["adult"], "actions": ["update"] },
+        "decision_note": { "writable_by": ["adult"], "actions": ["update"] },
+        "disposition_action": { "writable_by": ["adult"], "actions": ["update"] },
+        "disposition_at": { "writable_by": ["adult"], "actions": ["update"] },
+        "disposition_note": { "writable_by": ["adult"], "actions": ["update"] },
+        "disposition_by": { "writable_by": ["adult"], "actions": ["update"] },
+        "donation_reportable": { "writable_by": ["adult"], "actions": ["update"] },
+        "reevaluate_on": { "writable_by": ["adult"], "actions": ["update"] },
+        "decided_by": { "writable_by": ["adult"], "actions": ["update"] },
+        "decided_at": { "writable_by": ["adult"], "actions": ["update"] }
+      }
     },
     "votes": {
       "kind": "inherit_visibility",
       "parent_table": "items",
       "fk_column": "item_id",
       "writer_column": "member_id",
-      "unique_per_member": {
+      "max_per_member": {
         "member_column": "member_id",
-        "scope_columns": ["item_id"]
+        "scope_columns": ["item_id"],
+        "limit": 1
       }
     },
     "comments": {
@@ -58,7 +59,8 @@
       "kind": "inherit_visibility",
       "parent_table": "items",
       "fk_column": "item_id",
-      "writer_column": "actor_id"
+      "writer_column": "actor_id",
+      "retain_days": { "default": 365, "timestamp_column": "created_at", "override_key": "activity_history" }
     }
   },
   "publishes": [
