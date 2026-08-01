@@ -17,6 +17,34 @@
   },
   "storage": "db",
   "db_encryption": "off",
+    "member_references": {
+      "items": [
+        {
+          "column": "created_by",
+          "on_removed": "keep"
+        },
+        {
+          "column": "disposition_by",
+          "on_removed": "keep"
+        },
+        {
+          "column": "decided_by",
+          "on_removed": "keep"
+        }
+      ],
+      "votes": {
+        "column": "member_id",
+        "on_removed": "delete"
+      },
+      "comments": {
+        "column": "member_id",
+        "on_removed": "keep"
+      },
+      "activity": {
+        "column": "actor_id",
+        "on_removed": "keep"
+      }
+    },
   "row_policies": {
     "items": {
       "kind": "owner_or_visibility",
