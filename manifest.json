@@ -16,6 +16,48 @@
     "requires_approval": false
   },
   "storage": "db",
+  "automation_actions": {
+    "add_item": {
+      "title": "Put an item up for a keep-or-let-go decision",
+      "description": "Add something to the declutter list when another app's event fires - equipment retired, an item replaced, a warranty expired.",
+      "params": {
+        "created_by": {
+          "type": "member",
+          "label": "Added by",
+          "required": true
+        },
+        "name": {
+          "type": "text",
+          "label": "What it is",
+          "required": true
+        },
+        "location": {
+          "type": "text",
+          "label": "Where it is",
+          "default": ""
+        }
+      },
+      "dedupe": {
+        "table": "items",
+        "column": "source_event_id"
+      },
+      "steps": [
+        {
+          "op": "insert",
+          "table": "items",
+          "values": {
+            "id": "$uuid",
+            "name": ":name",
+            "location": ":location",
+            "created_by": ":created_by",
+            "created_at": "$now",
+            "updated_at": "$now",
+            "source_event_id": "$event_id"
+          }
+        }
+      ]
+    }
+  },
   "db_encryption": "off",
     "member_references": {
       "items": [
@@ -102,6 +144,8 @@
     "donations.item_added",
     "donations.decision_made"
   ],
+  "agenda": {"kind": "reminder", "label": "Revisit", "source": {"kind": "sql", "query": "SELECT id AS id, name AS title, category AS subtitle, reevaluate_on AS when_at FROM app_donations__items WHERE reevaluate_on = :today AND status <> 'archived' LIMIT 20"}},
+  "glance": {"source": {"kind": "sql", "query": "SELECT COUNT(*) AS n FROM app_donations__items WHERE status = 'active' LIMIT 1"}, "display": {"template": "badge", "count": "n", "label": "to decide", "severity": "info"}},
   "nav": { "label": "Let Go" },
   "widget": {
     "label": "Let Go",
