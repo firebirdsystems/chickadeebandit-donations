@@ -119,6 +119,30 @@ describe("csvCell", () => {
   it("quotes and escapes double quotes", () => {
     expect(csvCell(`he said "hi"`)).toBe(`"he said ""hi"""`);
   });
+
+  // Quoting alone ships the payload: a quoted field starting with a formula
+  // lead-in is still handed to the formula parser on open. An item name or
+  // note typed by one household member runs on the machine of whoever exports
+  // the report. Mirrors the hub's own guard (cloudflare/reports.ts).
+  it("neutralises formula lead-ins so a report cannot execute on open", () => {
+    expect(csvCell("=1+1")).toBe(`"'=1+1"`);
+    expect(csvCell("+1")).toBe(`"'+1"`);
+    expect(csvCell("-1")).toBe(`"'-1"`);
+    expect(csvCell("@SUM(A1)")).toBe(`"'@SUM(A1)"`);
+    // Excel strips a leading tab/CR before parsing, so both smuggle a formula
+    // past a naive "starts with =" check.
+    expect(csvCell("\t=cmd")).toBe(`"'\t=cmd"`);
+    expect(csvCell("\r=cmd")).toBe(`"'\r=cmd"`);
+  });
+
+  it("defuses the canonical command-execution payload", () => {
+    expect(csvCell(`=cmd|' /C calc'!A0`)).toBe(`"'=cmd|' /C calc'!A0"`);
+  });
+
+  it("leaves ordinary values alone apart from the quoting", () => {
+    expect(csvCell("Bike")).toBe(`"Bike"`);
+    expect(csvCell(null)).toBe(`""`);
+  });
 });
 
 describe("reportCsv", () => {

@@ -79,8 +79,35 @@ export function conditionLabel(item) {
   return answerLabel(item.broken_status);
 }
 
+/**
+ * Leading characters that make a spreadsheet treat a cell as a formula rather
+ * than text. Tab and CR are included because Excel strips them before parsing,
+ * so `\t=cmd` reaches the formula parser as `=cmd`.
+ *
+ * Kept character-for-character identical to the hub's own export guard
+ * (cloudflare/reports.ts) — one product must not neutralise the same attack
+ * two different ways.
+ */
+const CSV_FORMULA_LEAD = /^[=+\-@\t\r]/;
+
+/**
+ * One CSV cell: formula-neutralised, then quoted.
+ *
+ * Quoting is not a defence on its own. `"=cmd|' /C calc'!A0"` is a perfectly
+ * well-formed quoted field that Excel, Sheets and LibreOffice hand to the
+ * formula parser when the file is opened — so an item name or disposition note
+ * typed by any household member executes on the machine of whoever exports the
+ * donation report (often at tax time, often not the person who typed it).
+ * A leading apostrophe is the spreadsheet's own "treat as text" marker.
+ *
+ * Neutralised at EXPORT rather than on the way in: the stored value is the
+ * truth, the payload is dangerous only in a spreadsheet, and export-time also
+ * covers rows already in the database. Same call, same rule, as the hub.
+ */
 export function csvCell(value) {
-  return `"${String(value ?? "").replace(/"/g, '""')}"`;
+  const text = String(value ?? "");
+  const guarded = CSV_FORMULA_LEAD.test(text) ? `'${text}` : text;
+  return `"${guarded.replace(/"/g, '""')}"`;
 }
 
 export function reportCsv(items, reportState) {
