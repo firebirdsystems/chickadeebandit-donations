@@ -729,7 +729,10 @@ async function finalizeItem(itemId, status) {
       [status, note, reevaluate, myId(), now, itemId]
     );
     await addActivity(itemId, "decision", status);
-    await publishEvent("donations.decision_made", itemId, { status, decided_by: myId() });
+    // name travels so a "let go" decision can become a marketplace listing
+    // without a second trip through the item table (which the automation
+    // runner could not read anyway).
+    await publishEvent("donations.decision_made", itemId, { name: item.name, status, decided_by: myId() });
   }
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = status === "keep" ? "archive" : status;
@@ -842,7 +845,7 @@ async function saveDisposition(itemId) {
       ["archived", value, action, dispositionAt, note, myId(), reportable, now, itemId]
     );
     await addActivity(itemId, "disposition", action);
-    await publishEvent("donations.decision_made", itemId, { status: "archived", disposition_action: action, disposition_by: myId() });
+    await publishEvent("donations.decision_made", itemId, { name: item.name, status: "archived", disposition_action: action, disposition_by: myId() });
   }
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = "archive";

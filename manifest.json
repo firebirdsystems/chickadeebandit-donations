@@ -1,7 +1,7 @@
 {
   "id": "donations",
   "name": "Let Go",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A household decision board for deciding whether to keep, let go of, repair, or re-evaluate items.",
   "entrypoint": "index.html",
   "runtime": "static",
