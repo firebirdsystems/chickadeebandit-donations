@@ -16,6 +16,9 @@
     "requires_approval": false
   },
   "storage": "db",
+  "preload": {
+    "items": {"sql": "SELECT status, COUNT(*) AS n FROM app_donations__items GROUP BY status"}
+  },
   "automation_actions": {
     "add_item": {
       "title": "Put an item up for a keep-or-let-go decision",
