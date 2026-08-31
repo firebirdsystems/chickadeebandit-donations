@@ -1,0 +1,22 @@
+{
+  "scenarios": [
+    {
+      "name": "the finalize-decision controls render for an adult and not for a child",
+      "members": { "parent": "adult", "kid": "child" },
+      "steps": [
+        { "action": "seedRaw",
+          "sql": "INSERT INTO app_donations__items (id, name, category, created_by, status, visibility, created_at, updated_at) VALUES ('dn-item', ?, 'Furniture', ?, 'active', 'household', '2026-08-01T09:00:00Z', '2026-08-01T09:00:00Z')",
+          "params": ["Old armchair", "{{parent}}"] },
+
+        { "action": "open", "as": "kid" },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"item-card\"][data-item-id=\"dn-item\"]" },
+        { "action": "expectCount", "as": "kid", "selector": "[data-testid=\"adult-controls\"][data-item-id=\"dn-item\"]", "count": 0 },
+        { "action": "expectVisible", "as": "kid", "selector": "[data-testid=\"adult-note\"][data-item-id=\"dn-item\"]" },
+
+        { "action": "open", "as": "parent" },
+        { "action": "expectVisible", "as": "parent", "selector": "[data-testid=\"adult-controls\"][data-item-id=\"dn-item\"]" },
+        { "action": "expectCount", "as": "parent", "selector": "[data-testid=\"adult-note\"][data-item-id=\"dn-item\"]", "count": 0 }
+      ]
+    }
+  ]
+}

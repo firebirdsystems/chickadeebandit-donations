@@ -172,7 +172,7 @@
 </div>
 
 <script type="module">
-import { hubConfirm } from "/hub-sdk.js";
+import { hubConfirm, hubToday } from "/hub-sdk.js";
 import {
   statusLabels, dispositionLabels,
   esc, money, initial, colorFor, todayPlusMonths,
@@ -498,7 +498,7 @@ function renderItem(item) {
   }).filter(Boolean).join(" | ") || "No votes yet";
   const itemComments = comments.filter(c => c.item_id === item.id);
   return `
-    <article class="item ${expanded ? "" : "collapsed"}" data-item-id="${esc(item.id)}">
+    <article class="item ${expanded ? "" : "collapsed"}" data-testid="item-card" data-item-id="${esc(item.id)}">
       <div class="item-main">
         <div class="item-top">
           <div>
@@ -569,21 +569,21 @@ function renderComment(comment) {
 
 function renderAdultControls(item) {
   if (!isAdult()) {
-    return `<div class="adult-note" style="margin-top:12px">Adults finalize decisions and delete items.</div>`;
+    return `<div class="adult-note" data-testid="adult-note" data-item-id="${esc(item.id)}" style="margin-top:12px">Adults finalize decisions and delete items.</div>`;
   }
   const canFinalize = ["active", "let_go", "unsure"].includes(item.status);
   const canRecordAction = item.status === "let_go" || !!item.disposition_action;
   if (!canFinalize && !canRecordAction) {
     return `
       <div class="action-head" style="margin-top:12px"><span class="action-label">Manage</span></div>
-      <div class="decision-row"><button class="btn btn-sm danger edit-link" data-action="delete-item">Delete</button></div>
+      <div class="decision-row" data-testid="adult-controls" data-item-id="${esc(item.id)}"><button class="btn btn-sm danger edit-link" data-action="delete-item">Delete</button></div>
     `;
   }
   return `
     <div class="action-head" style="margin-top:12px">
       <span class="action-label">${canFinalize ? "Finalize decision" : "Manage action"}</span>
     </div>
-    <div class="decision-row">
+    <div class="decision-row" data-testid="adult-controls" data-item-id="${esc(item.id)}">
       ${canFinalize ? `<button class="btn btn-sm finalize" data-action="finalize-item" data-status="keep">Keep</button>
       <button class="btn btn-sm finalize" data-action="finalize-item" data-status="let_go">Let go</button>
       <button class="btn btn-sm finalize" data-action="finalize-item" data-status="unsure">Purge-atory</button>` : ""}
@@ -789,7 +789,7 @@ function openDispositionModal(itemId) {
           ["other", "Other"],
         ])}
       </div>
-      <div class="field"><label>Date</label><input id="f-disposition-at" type="date" value="${esc(item.disposition_at || new Date().toISOString().slice(0, 10))}" /></div>
+      <div class="field"><label>Date</label><input id="f-disposition-at" type="date" value="${esc(item.disposition_at || hubToday())}" /></div>
       <div class="field"><label>Estimated value</label><input id="f-disposition-value" inputmode="decimal" value="${item?.estimated_value_cents ? (item.estimated_value_cents / 100) : ""}" placeholder="0" /></div>
       <div class="field" id="donation-report-field">
         <label>Donation report</label>
