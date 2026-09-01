@@ -173,6 +173,17 @@
 
 <script type="module">
 import { hubConfirm, hubToday } from "/hub-sdk.js";
+
+// The household's calendar day as a Date, for the pure helpers in logic.js.
+// Those helpers default their date parameter to `new Date()` — the VIEWER
+// DEVICE's calendar — but they compare it against dates STORED on the household
+// calendar, which is what every server-side surface (glance, kiosk, cron,
+// `:today` in declared SQL) reports. Near midnight, or for a member in another
+// timezone, the two name different days. logic.js stays pure and SDK-free, so
+// the household day is supplied here. Noon keeps a DST shift from tipping it
+// into an adjacent day.
+const hubDay = () => new Date(`${hubToday()}T12:00:00`);
+
 import {
   statusLabels, dispositionLabels,
   esc, money, initial, colorFor, todayPlusMonths,
@@ -293,7 +304,7 @@ async function loadData() {
         has_home: "no", keep_reason: "Some are funny and sweet.",
         let_go_reason: "The box is taking over the closet.", decision_note: "Review after taking photos.",
         disposition_action: "", disposition_at: "", disposition_note: "", disposition_by: "", donation_reportable: "no",
-        reevaluate_on: todayPlusMonths(6), decided_by: "demo-1", decided_at: base, created_at: base, updated_at: base,
+        reevaluate_on: todayPlusMonths(6, hubDay()), decided_by: "demo-1", decided_at: base, created_at: base, updated_at: base,
       },
     ];
     votes = [
@@ -720,7 +731,7 @@ async function finalizeItem(itemId, status) {
   const item = items.find(i => i.id === itemId);
   if (!item) return;
   const note = status === "unsure" ? "Moved to the Purge-atory box for later review." : `Decision: ${statusLabels[status]}.`;
-  const reevaluate = status === "unsure" ? todayPlusMonths(6) : "";
+  const reevaluate = status === "unsure" ? todayPlusMonths(6, hubDay()) : "";
   const now = nowIso();
   const updated = { ...item, status, decision_note: note, reevaluate_on: reevaluate, decided_by: myId(), decided_at: now, updated_at: now };
   if (DB) {
