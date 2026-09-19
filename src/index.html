@@ -17,15 +17,15 @@
       --accent: var(--hub-primary, #1f5f4a);
       --accent-hover: #174a3a;
       --accent-fg: var(--hub-primary-fg, #ffffff);
-      --soft: #eef3e9;
-      --blue: #2563eb;
-      --blue-soft: #dbeafe;
-      --amber: #b45309;
-      --amber-soft: #fef3c7;
-      --green: #15803d;
-      --green-soft: #dcfce7;
-      --red: #b91c1c;
-      --red-soft: #fee2e2;
+      --soft: var(--bg);
+      --blue: var(--hub-tint-info-fg, #2563eb);
+      --blue-soft: var(--hub-tint-info, #dbeafe);
+      --amber: var(--hub-tint-warning-fg, #b45309);
+      --amber-soft: var(--hub-tint-warning, #fef3c7);
+      --green: var(--hub-tint-success-fg, #15803d);
+      --green-soft: var(--hub-tint-success, #dcfce7);
+      --red: var(--hub-tint-danger-fg, #b91c1c);
+      --red-soft: var(--hub-tint-danger-border, #fee2e2);
       --radius: var(--hub-radius, 0.5rem);
       --shadow: 0 1px 3px rgba(23, 32, 26, .08);
     }
@@ -81,7 +81,7 @@
     .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font-weight: 800; font-size: .72rem; white-space: nowrap; }
     .badge-active { background: var(--blue-soft); color: var(--blue); }
     .badge-keep { background: var(--green-soft); color: var(--green); }
-    .badge-let_go { background: #ede9fe; color: #6d28d9; }
+    .badge-let_go { background: var(--hub-tint-accent, #ede9fe); color: var(--hub-tint-accent-fg, #6d28d9); }
     .badge-unsure { background: var(--amber-soft); color: var(--amber); }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
     .fact { background: var(--soft); border-radius: 8px; padding: 8px 10px; min-height: 52px; }
@@ -93,13 +93,13 @@
     .action-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 7px; }
     .action-label { color: var(--text); font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
     .vote-row, .decision-row { display: flex; gap: 6px; flex-wrap: wrap; }
-    .decision-row { margin-top: 8px; padding: 10px; border-radius: 8px; background: #fbfcfa; border: 1px solid var(--border); }
+    .decision-row { margin-top: 8px; padding: 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
     .vote { border-color: var(--border); }
     .vote.active { border-color: var(--accent); background: var(--soft); color: var(--accent); }
     .finalize { border-color: transparent; background: var(--accent); color: var(--accent-fg); }
     .finalize:hover { background: var(--accent-hover); }
     .danger { border-color: var(--red-soft); color: var(--red); background: var(--card); }
-    .danger:hover { background: var(--red-soft); border-color: var(--red-soft); }
+    .danger:hover { background: var(--hub-tint-danger, #fee2e2); border-color: var(--red-soft); }
     .edit-link { margin-left: auto; }
     .adult-note { padding: 9px 10px; border-radius: 8px; background: var(--soft); color: var(--muted); font-size: .82rem; }
     .pager { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 0; color: var(--muted); font-size: .84rem; }
@@ -109,9 +109,9 @@
     .report-list { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
     .report-row { display: grid; grid-template-columns: 1.4fr .8fr .8fr .8fr; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); align-items: center; font-size: .86rem; }
     .report-row:last-child { border-bottom: 0; }
-    .report-row.head { background: #fbfcfa; color: var(--muted); font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+    .report-row.head { background: var(--bg); color: var(--muted); font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
     .report-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .comments { border-top: 1px solid var(--border); background: #fbfcfa; padding: 12px 14px; }
+    .comments { border-top: 1px solid var(--border); background: var(--bg); padding: 12px 14px; }
     .comment { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
     .comment:last-of-type { border-bottom: 0; }
     .avatar {
