@@ -1,5 +1,7 @@
 # Let Go
 
+A [Chickadee Bandit](https://chickadeebandit.com/app-library/donations) app.
+
 A Chickadee Bandit app for household decluttering decisions.
 
 Any household member can add an item, vote on what should happen to it, and leave context such as whether it was used recently, whether it is broken, whether repair makes sense, repair cost, estimated value, why someone wants to keep it, why someone wants to let it go, and whether it has a sensible home.
