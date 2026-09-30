@@ -31,6 +31,114 @@
           "expect": { "status": 403, "errorIncludes": "adult" }
         }
       ]
+    },
+    {
+      "name": "a comment on an item is the commenter's own: nobody can post one in another member's name, and no one else, not even a parent, can edit or delete it",
+      "members": { "parent": "adult", "partner": "adult", "kid": "child" },
+      "steps": [
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_donations__items (id, name, created_by, created_at, updated_at) VALUES ('item1', 'Old bike', ?, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')",
+          "params": ["{{parent}}"]
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES ('cm-kid', 'item1', ?, 'comment', 'Please keep it, I still ride it', '2026-01-02T00:00:00Z')",
+          "params": ["{{kid}}"],
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES ('cm-forged', 'item1', ?, 'comment', 'Fine, keep the bike', '2026-01-02T01:00:00Z')",
+          "params": ["{{parent}}"]
+        },
+        {
+          "action": "db",
+          "as": "parent",
+          "sql": "SELECT id FROM app_donations__comments WHERE member_id = 'scn-parent'",
+          "expect": { "status": 200, "rowCount": 0 }
+        },
+        {
+          "action": "db",
+          "as": "parent",
+          "sql": "UPDATE app_donations__comments SET body = 'Let it go' WHERE id = 'cm-kid'",
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "partner",
+          "sql": "DELETE FROM app_donations__comments WHERE id = 'cm-kid'",
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "partner",
+          "sql": "SELECT member_id, body FROM app_donations__comments WHERE id = 'cm-kid'",
+          "expect": {
+            "status": 200,
+            "rowCount": 1,
+            "rowsContain": [{ "member_id": "scn-kid", "body": "Please keep it, I still ride it" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "an item's activity history is attributed to whoever acted and cannot be rewritten or erased by any other member",
+      "members": { "decider": "adult", "other": "adult", "kid": "child" },
+      "steps": [
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_donations__items (id, name, created_by, status, decided_by, decided_at, created_at, updated_at) VALUES ('item1', 'Treadmill', ?, 'let_go', ?, '2026-01-03T00:00:00Z', '2026-01-01T00:00:00Z', '2026-01-03T00:00:00Z')",
+          "params": ["{{decider}}", "{{decider}}"]
+        },
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES ('act1', 'item1', ?, 'decision', 'let_go', '2026-01-03T00:00:00Z')",
+          "params": ["{{decider}}"]
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "SELECT actor_id, action FROM app_donations__activity WHERE item_id = 'item1'",
+          "expect": {
+            "status": 200,
+            "rowCount": 1,
+            "rowsContain": [{ "actor_id": "scn-decider", "action": "decision" }]
+          }
+        },
+        {
+          "action": "db",
+          "as": "other",
+          "sql": "UPDATE app_donations__activity SET detail = 'keep' WHERE id = 'act1'",
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "other",
+          "sql": "DELETE FROM app_donations__activity WHERE id = 'act1'",
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "DELETE FROM app_donations__activity WHERE id = 'act1'",
+          "expect": { "status": 200 }
+        },
+        {
+          "action": "db",
+          "as": "kid",
+          "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES ('act-forged', 'item1', ?, 'decision', 'keep', '2026-01-04T00:00:00Z')",
+          "params": ["{{decider}}"]
+        },
+        {
+          "action": "db",
+          "as": "decider",
+          "sql": "SELECT id, detail FROM app_donations__activity WHERE actor_id = 'scn-decider'",
+          "expect": { "status": 200, "rowCount": 1, "rowsContain": [{ "id": "act1", "detail": "let_go" }] }
+        }
+      ]
     }
   ]
 }
