@@ -17,7 +17,11 @@
   },
   "storage": "db",
   "preload": {
-    "items": {"sql": "SELECT status, COUNT(*) AS n FROM app_donations__items GROUP BY status"}
+    "items": {"sql": "SELECT status, COUNT(*) AS n FROM app_donations__items GROUP BY status"},
+    "active_items": {
+      "sql": "SELECT * FROM app_donations__items WHERE status = ? ORDER BY updated_at DESC LIMIT 10",
+      "params": ["active"]
+    }
   },
   "automation_actions": {
     "add_item": {

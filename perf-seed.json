@@ -1,0 +1,2533 @@
+{
+ "seed": [
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-di-01",
+    "Old armchair",
+    "Furniture",
+    "Basement",
+    "{{me}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:11:00Z','now','-5 days'))",
+   "params": [
+    "perf-da-001",
+    "perf-di-01",
+    "{{me}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-34 days'), strftime('%Y-%m-%dT12:00:00Z','now','-31 days'))",
+   "params": [
+    "perf-di-02",
+    "Bread machine",
+    "Kitchen",
+    "Pantry top shelf",
+    "{{partner}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "We have two of these.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-63 days'), strftime('%Y-%m-%dT12:00:00Z','now','-59 days'))",
+   "params": [
+    "perf-di-03",
+    "Box of VHS tapes",
+    "Media",
+    "Attic",
+    "{{adult2}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    2700,
+    3500,
+    "unknown",
+    "Takes up half the closet.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-92 days'), strftime('%Y-%m-%dT12:00:00Z','now','-87 days'))",
+   "params": [
+    "perf-di-04",
+    "Kids' balance bike",
+    "Toys",
+    "Garage",
+    "{{child}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-121 days'), strftime('%Y-%m-%dT12:00:00Z','now','-119 days'))",
+   "params": [
+    "perf-di-05",
+    "Treadmill",
+    "Fitness",
+    "Spare room",
+    "{{child2}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "Outgrown.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:12:00Z','now','-121 days'))",
+   "params": [
+    "perf-da-002",
+    "perf-di-05",
+    "{{child2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-150 days'), strftime('%Y-%m-%dT12:00:00Z','now','-147 days'))",
+   "params": [
+    "perf-di-06",
+    "Fondue set",
+    "Kitchen",
+    "Cabinet over fridge",
+    "{{me}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "Nobody has used it since last winter.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-29 days'), strftime('%Y-%m-%dT12:00:00Z','now','-25 days'))",
+   "params": [
+    "perf-di-07",
+    "Winter coats, outgrown",
+    "Clothing",
+    "Hall closet",
+    "{{partner}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "no",
+    3100,
+    500,
+    "unknown",
+    "Still fits someone",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-58 days'), strftime('%Y-%m-%dT12:00:00Z','now','-53 days'))",
+   "params": [
+    "perf-di-08",
+    "Inkjet printer",
+    "Electronics",
+    "Office",
+    "{{adult2}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    2000,
+    "yes",
+    "Takes up half the closet.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-87 days'), strftime('%Y-%m-%dT12:00:00Z','now','-85 days'))",
+   "params": [
+    "perf-di-09",
+    "Camping stove",
+    "Outdoors",
+    "Garage shelf",
+    "{{child}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    3500,
+    "no",
+    "Too big for this house.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:13:00Z','now','-87 days'))",
+   "params": [
+    "perf-da-003",
+    "perf-di-09",
+    "{{child}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-116 days'), strftime('%Y-%m-%dT12:00:00Z','now','-113 days'))",
+   "params": [
+    "perf-di-10",
+    "Crib mattress",
+    "Baby",
+    "Attic",
+    "{{child2}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    5000,
+    "maybe",
+    "We'd have to buy another one",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-145 days'), strftime('%Y-%m-%dT12:00:00Z','now','-141 days'))",
+   "params": [
+    "perf-di-11",
+    "Stack of board games",
+    "Toys",
+    "Playroom",
+    "{{me}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "maybe",
+    3500,
+    6500,
+    "unknown",
+    "Nobody has used it since last winter.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-24 days'), strftime('%Y-%m-%dT12:00:00Z','now','-19 days'))",
+   "params": [
+    "perf-di-12",
+    "Guitar amp",
+    "Music",
+    "Basement",
+    "{{partner}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    8000,
+    "yes",
+    "We have two of these.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-53 days'), strftime('%Y-%m-%dT12:00:00Z','now','-51 days'))",
+   "params": [
+    "perf-di-13",
+    "Cross-country skis",
+    "Outdoors",
+    "Garage rafters",
+    "{{adult2}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:14:00Z','now','-53 days'))",
+   "params": [
+    "perf-da-004",
+    "perf-di-13",
+    "{{adult2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-82 days'), strftime('%Y-%m-%dT12:00:00Z','now','-79 days'))",
+   "params": [
+    "perf-di-14",
+    "Juicer",
+    "Kitchen",
+    "Lower cabinet",
+    "{{child}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "Too big for this house.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-111 days'), strftime('%Y-%m-%dT12:00:00Z','now','-107 days'))",
+   "params": [
+    "perf-di-15",
+    "DVD player",
+    "Electronics",
+    "TV console",
+    "{{child2}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    3900,
+    3500,
+    "unknown",
+    "Outgrown.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-140 days'), strftime('%Y-%m-%dT12:00:00Z','now','-135 days'))",
+   "params": [
+    "perf-di-16",
+    "Wedding china, 8 settings",
+    "Kitchen",
+    "Dining hutch",
+    "{{me}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-19 days'), strftime('%Y-%m-%dT12:00:00Z','now','-17 days'))",
+   "params": [
+    "perf-di-17",
+    "Exercise bike",
+    "Fitness",
+    "Basement",
+    "{{partner}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "We have two of these.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:15:00Z','now','-19 days'))",
+   "params": [
+    "perf-da-005",
+    "perf-di-17",
+    "{{partner}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-48 days'), strftime('%Y-%m-%dT12:00:00Z','now','-45 days'))",
+   "params": [
+    "perf-di-18",
+    "College textbooks",
+    "Books",
+    "Office",
+    "{{adult2}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "Takes up half the closet.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-77 days'), strftime('%Y-%m-%dT12:00:00Z','now','-73 days'))",
+   "params": [
+    "perf-di-19",
+    "Stroller",
+    "Baby",
+    "Garage",
+    "{{child}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "no",
+    4300,
+    500,
+    "unknown",
+    "Still fits someone",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-106 days'), strftime('%Y-%m-%dT12:00:00Z','now','-101 days'))",
+   "params": [
+    "perf-di-20",
+    "Paint cans, half used",
+    "Garage",
+    "Garage",
+    "{{child2}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    2000,
+    "yes",
+    "Outgrown.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-135 days'), strftime('%Y-%m-%dT12:00:00Z','now','-133 days'))",
+   "params": [
+    "perf-di-21",
+    "Lego bins",
+    "Toys",
+    "Playroom",
+    "{{me}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    3500,
+    "no",
+    "Nobody has used it since last winter.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:16:00Z','now','-135 days'))",
+   "params": [
+    "perf-da-006",
+    "perf-di-21",
+    "{{me}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-14 days'), strftime('%Y-%m-%dT12:00:00Z','now','-11 days'))",
+   "params": [
+    "perf-di-22",
+    "Sewing machine",
+    "Hobby",
+    "Spare room",
+    "{{partner}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    5000,
+    "maybe",
+    "We'd have to buy another one",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-43 days'), strftime('%Y-%m-%dT12:00:00Z','now','-39 days'))",
+   "params": [
+    "perf-di-23",
+    "Aquarium, 20 gallon",
+    "Pets",
+    "Basement",
+    "{{adult2}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "maybe",
+    4700,
+    6500,
+    "unknown",
+    "Takes up half the closet.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-72 days'), strftime('%Y-%m-%dT12:00:00Z','now','-67 days'))",
+   "params": [
+    "perf-di-24",
+    "Halloween decorations",
+    "Seasonal",
+    "Attic",
+    "{{child}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    8000,
+    "yes",
+    "Too big for this house.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-101 days'), strftime('%Y-%m-%dT12:00:00Z','now','-99 days'))",
+   "params": [
+    "perf-di-25",
+    "Office chair with broken arm",
+    "Furniture",
+    "Office",
+    "{{child2}}",
+    "active",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:17:00Z','now','-101 days'))",
+   "params": [
+    "perf-da-007",
+    "perf-di-25",
+    "{{child2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-130 days'), strftime('%Y-%m-%dT12:00:00Z','now','-127 days'))",
+   "params": [
+    "perf-di-26",
+    "Slow cooker, spare",
+    "Kitchen",
+    "Pantry",
+    "{{me}}",
+    "active",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "Nobody has used it since last winter.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-9 days'), strftime('%Y-%m-%dT12:00:00Z','now','-5 days'))",
+   "params": [
+    "perf-di-27",
+    "Roller blades",
+    "Outdoors",
+    "Garage",
+    "{{partner}}",
+    "active",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    5100,
+    3500,
+    "unknown",
+    "We have two of these.",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-38 days'), strftime('%Y-%m-%dT12:00:00Z','now','-33 days'))",
+   "params": [
+    "perf-di-28",
+    "Old laptops (2)",
+    "Electronics",
+    "Office closet",
+    "{{adult2}}",
+    "active",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-62 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-67 days'), strftime('%Y-%m-%dT12:00:00Z','now','-62 days'))",
+   "params": [
+    "perf-di-29",
+    "Framed posters",
+    "Decor",
+    "Under the bed",
+    "{{child}}",
+    "unsure",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "Too big for this house.",
+    "Give it one more season.",
+    "{{date:0}}",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:18:00Z','now','-67 days'))",
+   "params": [
+    "perf-da-008",
+    "perf-di-29",
+    "{{child}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-90 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-96 days'), strftime('%Y-%m-%dT12:00:00Z','now','-90 days'))",
+   "params": [
+    "perf-di-30",
+    "Tent, 6 person",
+    "Outdoors",
+    "Garage",
+    "{{child2}}",
+    "unsure",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "Outgrown.",
+    "Give it one more season.",
+    "{{date:-12}}",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-118 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-125 days'), strftime('%Y-%m-%dT12:00:00Z','now','-118 days'))",
+   "params": [
+    "perf-di-31",
+    "High chair",
+    "Baby",
+    "Basement",
+    "{{me}}",
+    "unsure",
+    "household",
+    "maybe",
+    "broken",
+    "no",
+    5500,
+    500,
+    "unknown",
+    "Still fits someone",
+    "Give it one more season.",
+    "{{date:0}}",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:19:00Z','now','-118 days'))",
+   "params": [
+    "perf-da-009",
+    "perf-di-31",
+    "{{me}}",
+    "decision",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-146 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-154 days'), strftime('%Y-%m-%dT12:00:00Z','now','-146 days'))",
+   "params": [
+    "perf-di-32",
+    "Bookshelf, white",
+    "Furniture",
+    "Spare room",
+    "{{partner}}",
+    "unsure",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    2000,
+    "yes",
+    "We have two of these.",
+    "Give it one more season.",
+    "{{date:12}}",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-24 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-33 days'), strftime('%Y-%m-%dT12:00:00Z','now','-24 days'))",
+   "params": [
+    "perf-di-33",
+    "Record collection",
+    "Media",
+    "Living room",
+    "{{adult2}}",
+    "unsure",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    3500,
+    "no",
+    "Takes up half the closet.",
+    "Give it one more season.",
+    "{{date:24}}",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:10:00Z','now','-33 days'))",
+   "params": [
+    "perf-da-010",
+    "perf-di-33",
+    "{{adult2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-52 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-62 days'), strftime('%Y-%m-%dT12:00:00Z','now','-52 days'))",
+   "params": [
+    "perf-di-34",
+    "Ice cream maker",
+    "Kitchen",
+    "Pantry",
+    "{{child}}",
+    "unsure",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    5000,
+    "maybe",
+    "We'd have to buy another one",
+    "Give it one more season.",
+    "{{date:36}}",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:11:00Z','now','-52 days'))",
+   "params": [
+    "perf-da-011",
+    "perf-di-34",
+    "{{partner}}",
+    "decision",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-80 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-91 days'), strftime('%Y-%m-%dT12:00:00Z','now','-80 days'))",
+   "params": [
+    "perf-di-35",
+    "Golf clubs",
+    "Outdoors",
+    "Garage",
+    "{{child2}}",
+    "unsure",
+    "household",
+    "maybe",
+    "broken",
+    "maybe",
+    5900,
+    6500,
+    "unknown",
+    "Outgrown.",
+    "Give it one more season.",
+    "{{date:48}}",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-108 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-120 days'), strftime('%Y-%m-%dT12:00:00Z','now','-108 days'))",
+   "params": [
+    "perf-di-36",
+    "Dress shoes, barely worn",
+    "Clothing",
+    "Bedroom closet",
+    "{{me}}",
+    "unsure",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    8000,
+    "yes",
+    "Nobody has used it since last winter.",
+    "Give it one more season.",
+    "{{date:60}}",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-145 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-149 days'), strftime('%Y-%m-%dT12:00:00Z','now','-145 days'))",
+   "params": [
+    "perf-di-37",
+    "Electric keyboard",
+    "Music",
+    "Playroom",
+    "{{partner}}",
+    "unsure",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "Give it one more season.",
+    "{{date:72}}",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:12:00Z','now','-149 days'))",
+   "params": [
+    "perf-da-012",
+    "perf-di-37",
+    "{{partner}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:13:00Z','now','-145 days'))",
+   "params": [
+    "perf-da-013",
+    "perf-di-37",
+    "{{me}}",
+    "decision",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, reevaluate_on, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-23 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-28 days'), strftime('%Y-%m-%dT12:00:00Z','now','-23 days'))",
+   "params": [
+    "perf-di-38",
+    "Yarn stash",
+    "Hobby",
+    "Spare room",
+    "{{adult2}}",
+    "unsure",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "Takes up half the closet.",
+    "Give it one more season.",
+    "{{date:84}}",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-51 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-57 days'), strftime('%Y-%m-%dT12:00:00Z','now','-51 days'))",
+   "params": [
+    "perf-di-39",
+    "Coffee table",
+    "Furniture",
+    "Basement",
+    "{{child}}",
+    "let_go",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    6300,
+    3500,
+    "unknown",
+    "Too big for this house.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-79 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-86 days'), strftime('%Y-%m-%dT12:00:00Z','now','-79 days'))",
+   "params": [
+    "perf-di-40",
+    "Kids' picture books",
+    "Books",
+    "Playroom",
+    "{{child2}}",
+    "let_go",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:14:00Z','now','-79 days'))",
+   "params": [
+    "perf-da-014",
+    "perf-di-40",
+    "{{partner}}",
+    "decision",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-107 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-115 days'), strftime('%Y-%m-%dT12:00:00Z','now','-107 days'))",
+   "params": [
+    "perf-di-41",
+    "Waffle iron",
+    "Kitchen",
+    "Lower cabinet",
+    "{{me}}",
+    "let_go",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "Nobody has used it since last winter.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:15:00Z','now','-115 days'))",
+   "params": [
+    "perf-da-015",
+    "perf-di-41",
+    "{{me}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-135 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-144 days'), strftime('%Y-%m-%dT12:00:00Z','now','-135 days'))",
+   "params": [
+    "perf-di-42",
+    "Scooter",
+    "Toys",
+    "Garage",
+    "{{partner}}",
+    "let_go",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "We have two of these.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-13 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-23 days'), strftime('%Y-%m-%dT12:00:00Z','now','-13 days'))",
+   "params": [
+    "perf-di-43",
+    "Monitor, 22 inch",
+    "Electronics",
+    "Office",
+    "{{adult2}}",
+    "let_go",
+    "household",
+    "maybe",
+    "broken",
+    "no",
+    6700,
+    500,
+    "unknown",
+    "Still fits someone",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:16:00Z','now','-13 days'))",
+   "params": [
+    "perf-da-016",
+    "perf-di-43",
+    "{{me}}",
+    "decision",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-41 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-52 days'), strftime('%Y-%m-%dT12:00:00Z','now','-41 days'))",
+   "params": [
+    "perf-di-44",
+    "Ski boots, size 6",
+    "Outdoors",
+    "Garage",
+    "{{child}}",
+    "let_go",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    2000,
+    "yes",
+    "Too big for this house.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-69 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-81 days'), strftime('%Y-%m-%dT12:00:00Z','now','-69 days'))",
+   "params": [
+    "perf-di-45",
+    "Curtains from old house",
+    "Decor",
+    "Linen closet",
+    "{{child2}}",
+    "let_go",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    3500,
+    "no",
+    "Outgrown.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:17:00Z','now','-81 days'))",
+   "params": [
+    "perf-da-017",
+    "perf-di-45",
+    "{{child2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-106 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-110 days'), strftime('%Y-%m-%dT12:00:00Z','now','-106 days'))",
+   "params": [
+    "perf-di-46",
+    "Baby clothes, 0-12 months",
+    "Baby",
+    "Attic",
+    "{{me}}",
+    "let_go",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    5000,
+    "maybe",
+    "We'd have to buy another one",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:18:00Z','now','-106 days'))",
+   "params": [
+    "perf-da-018",
+    "perf-di-46",
+    "{{partner}}",
+    "decision",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-134 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-139 days'), strftime('%Y-%m-%dT12:00:00Z','now','-134 days'))",
+   "params": [
+    "perf-di-47",
+    "Dumbbell set",
+    "Fitness",
+    "Basement",
+    "{{partner}}",
+    "let_go",
+    "household",
+    "maybe",
+    "broken",
+    "maybe",
+    7100,
+    6500,
+    "unknown",
+    "We have two of these.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-12 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-18 days'), strftime('%Y-%m-%dT12:00:00Z','now','-12 days'))",
+   "params": [
+    "perf-di-48",
+    "Espresso machine",
+    "Kitchen",
+    "Counter",
+    "{{adult2}}",
+    "let_go",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    8000,
+    "yes",
+    "Takes up half the closet.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-40 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-47 days'), strftime('%Y-%m-%dT12:00:00Z','now','-40 days'))",
+   "params": [
+    "perf-di-49",
+    "Christmas lights, tangled",
+    "Seasonal",
+    "Attic",
+    "{{child}}",
+    "keep",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "Staying, but it needs a proper home.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:19:00Z','now','-47 days'))",
+   "params": [
+    "perf-da-019",
+    "perf-di-49",
+    "{{child}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:10:00Z','now','-40 days'))",
+   "params": [
+    "perf-da-020",
+    "perf-di-49",
+    "{{me}}",
+    "decision",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-68 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-76 days'), strftime('%Y-%m-%dT12:00:00Z','now','-68 days'))",
+   "params": [
+    "perf-di-50",
+    "Tool chest duplicates",
+    "Garage",
+    "Garage",
+    "{{child2}}",
+    "keep",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "Outgrown.",
+    "Staying, but it needs a proper home.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-96 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-105 days'), strftime('%Y-%m-%dT12:00:00Z','now','-96 days'))",
+   "params": [
+    "perf-di-51",
+    "Dollhouse",
+    "Toys",
+    "Playroom",
+    "{{me}}",
+    "keep",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    7500,
+    3500,
+    "unknown",
+    "Nobody has used it since last winter.",
+    "Staying, but it needs a proper home.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-124 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-134 days'), strftime('%Y-%m-%dT12:00:00Z','now','-124 days'))",
+   "params": [
+    "perf-di-52",
+    "Rug, 5x8",
+    "Decor",
+    "Basement",
+    "{{partner}}",
+    "keep",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "Staying, but it needs a proper home.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:11:00Z','now','-124 days'))",
+   "params": [
+    "perf-da-021",
+    "perf-di-52",
+    "{{partner}}",
+    "decision",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-13 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-di-53",
+    "Old phones and chargers",
+    "Electronics",
+    "Junk drawer",
+    "{{adult2}}",
+    "keep",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "Takes up half the closet.",
+    "Staying, but it needs a proper home.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:12:00Z','now','-13 days'))",
+   "params": [
+    "perf-da-022",
+    "perf-di-53",
+    "{{adult2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-30 days'), ?, strftime('%Y-%m-%dT12:00:00Z','now','-42 days'), strftime('%Y-%m-%dT12:00:00Z','now','-30 days'))",
+   "params": [
+    "perf-di-54",
+    "Pasta maker",
+    "Kitchen",
+    "Cabinet",
+    "{{child}}",
+    "keep",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "Too big for this house.",
+    "Staying, but it needs a proper home.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-67 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-71 days'), strftime('%Y-%m-%dT12:00:00Z','now','-64 days'))",
+   "params": [
+    "perf-di-55",
+    "Bike rack",
+    "Outdoors",
+    "Garage",
+    "{{child2}}",
+    "archived",
+    "household",
+    "maybe",
+    "broken",
+    "no",
+    7900,
+    500,
+    "unknown",
+    "Still fits someone",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "donated",
+    "{{date:-64}}",
+    "E-waste day at the transfer station.",
+    "{{me}}",
+    "yes"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:13:00Z','now','-67 days'))",
+   "params": [
+    "perf-da-023",
+    "perf-di-55",
+    "{{me}}",
+    "decision",
+    "archived"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:14:00Z','now','-64 days'))",
+   "params": [
+    "perf-da-024",
+    "perf-di-55",
+    "{{me}}",
+    "disposition",
+    "donated"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-95 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-100 days'), strftime('%Y-%m-%dT12:00:00Z','now','-92 days'))",
+   "params": [
+    "perf-di-56",
+    "Suit, grey",
+    "Clothing",
+    "Bedroom closet",
+    "{{me}}",
+    "archived",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    2000,
+    "yes",
+    "Nobody has used it since last winter.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "other",
+    "{{date:-92}}",
+    "Went to the cousins.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-123 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-129 days'), strftime('%Y-%m-%dT12:00:00Z','now','-120 days'))",
+   "params": [
+    "perf-di-57",
+    "Puzzle collection",
+    "Toys",
+    "Hall closet",
+    "{{partner}}",
+    "archived",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    3500,
+    "no",
+    "We have two of these.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "donated",
+    "{{date:-120}}",
+    "Dropped at the community thrift store.",
+    "{{me}}",
+    "yes"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:15:00Z','now','-129 days'))",
+   "params": [
+    "perf-da-025",
+    "perf-di-57",
+    "{{partner}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:16:00Z','now','-120 days'))",
+   "params": [
+    "perf-da-026",
+    "perf-di-57",
+    "{{me}}",
+    "disposition",
+    "donated"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-8 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-di-58",
+    "Lamp, floor",
+    "Furniture",
+    "Spare room",
+    "{{adult2}}",
+    "archived",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    5000,
+    "maybe",
+    "We'd have to buy another one",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "sold",
+    "{{date:0}}",
+    "Sold on the neighbourhood list.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:17:00Z','now','-1 days'))",
+   "params": [
+    "perf-da-027",
+    "perf-di-58",
+    "{{partner}}",
+    "decision",
+    "archived"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-29 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-37 days'), strftime('%Y-%m-%dT12:00:00Z','now','-26 days'))",
+   "params": [
+    "perf-di-59",
+    "Car seat, expired",
+    "Baby",
+    "Garage",
+    "{{child}}",
+    "archived",
+    "household",
+    "maybe",
+    "broken",
+    "maybe",
+    8300,
+    6500,
+    "unknown",
+    "Too big for this house.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "recycled",
+    "{{date:-26}}",
+    "E-waste day at the transfer station.",
+    "{{me}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:18:00Z','now','-26 days'))",
+   "params": [
+    "perf-da-028",
+    "perf-di-59",
+    "{{me}}",
+    "disposition",
+    "recycled"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-57 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-66 days'), strftime('%Y-%m-%dT12:00:00Z','now','-54 days'))",
+   "params": [
+    "perf-di-60",
+    "Mixer attachments",
+    "Kitchen",
+    "Pantry",
+    "{{child2}}",
+    "archived",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    8000,
+    "yes",
+    "Outgrown.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "given_away",
+    "{{date:-54}}",
+    "Went to the cousins.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-85 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-95 days'), strftime('%Y-%m-%dT12:00:00Z','now','-82 days'))",
+   "params": [
+    "perf-di-61",
+    "Encyclopedia set",
+    "Books",
+    "Basement",
+    "{{me}}",
+    "archived",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    500,
+    "no",
+    "Sentimental, it was Grandpa's",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "donated",
+    "{{date:-82}}",
+    "Dropped at the community thrift store.",
+    "{{me}}",
+    "yes"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:19:00Z','now','-95 days'))",
+   "params": [
+    "perf-da-029",
+    "perf-di-61",
+    "{{me}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:10:00Z','now','-85 days'))",
+   "params": [
+    "perf-da-030",
+    "perf-di-61",
+    "{{me}}",
+    "decision",
+    "archived"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:11:00Z','now','-82 days'))",
+   "params": [
+    "perf-da-031",
+    "perf-di-61",
+    "{{me}}",
+    "disposition",
+    "donated"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-113 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-124 days'), strftime('%Y-%m-%dT12:00:00Z','now','-110 days'))",
+   "params": [
+    "perf-di-62",
+    "Soccer cleats, outgrown",
+    "Clothing",
+    "Mudroom",
+    "{{partner}}",
+    "archived",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    2000,
+    "maybe",
+    "We have two of these.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "discarded",
+    "{{date:-110}}",
+    "Sold on the neighbourhood list.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-141 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-153 days'), strftime('%Y-%m-%dT12:00:00Z','now','-138 days'))",
+   "params": [
+    "perf-di-63",
+    "Card table and chairs",
+    "Furniture",
+    "Garage",
+    "{{adult2}}",
+    "archived",
+    "household",
+    "maybe",
+    "broken",
+    "yes",
+    8700,
+    3500,
+    "unknown",
+    "Takes up half the closet.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "donated",
+    "{{date:-138}}",
+    "E-waste day at the transfer station.",
+    "{{me}}",
+    "yes"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:12:00Z','now','-138 days'))",
+   "params": [
+    "perf-da-032",
+    "perf-di-63",
+    "{{me}}",
+    "disposition",
+    "donated"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-28 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-32 days'), strftime('%Y-%m-%dT12:00:00Z','now','-25 days'))",
+   "params": [
+    "perf-di-64",
+    "Karaoke machine",
+    "Electronics",
+    "Basement",
+    "{{child}}",
+    "archived",
+    "household",
+    "unknown",
+    "unknown",
+    "unknown",
+    0,
+    5000,
+    "yes",
+    "Kids asked to keep it",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "other",
+    "{{date:-25}}",
+    "Went to the cousins.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:13:00Z','now','-28 days'))",
+   "params": [
+    "perf-da-033",
+    "perf-di-64",
+    "{{partner}}",
+    "decision",
+    "archived"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-56 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-61 days'), strftime('%Y-%m-%dT12:00:00Z','now','-53 days'))",
+   "params": [
+    "perf-di-65",
+    "Garden gnome army",
+    "Decor",
+    "Shed",
+    "{{child2}}",
+    "archived",
+    "household",
+    "yes",
+    "working",
+    "unknown",
+    0,
+    6500,
+    "no",
+    "Outgrown.",
+    "Ready for the let-go queue.",
+    "{{me}}",
+    "donated",
+    "{{date:-53}}",
+    "Dropped at the community thrift store.",
+    "{{me}}",
+    "yes"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, created_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT10:14:00Z','now','-61 days'))",
+   "params": [
+    "perf-da-034",
+    "perf-di-65",
+    "{{child2}}",
+    "created"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__activity (id, item_id, actor_id, action, detail, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:15:00Z','now','-53 days'))",
+   "params": [
+    "perf-da-035",
+    "perf-di-65",
+    "{{me}}",
+    "disposition",
+    "donated"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__items (id, name, category, location, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, let_go_reason, decision_note, decided_by, decided_at, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-84 days'), ?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-90 days'), strftime('%Y-%m-%dT12:00:00Z','now','-81 days'))",
+   "params": [
+    "perf-di-66",
+    "Snow tubes",
+    "Outdoors",
+    "Shed",
+    "{{me}}",
+    "archived",
+    "household",
+    "no",
+    "working",
+    "unknown",
+    0,
+    8000,
+    "maybe",
+    "Nobody has used it since last winter.",
+    "Ready for the let-go queue.",
+    "{{partner}}",
+    "sold",
+    "{{date:-81}}",
+    "Sold on the neighbourhood list.",
+    "{{partner}}",
+    "no"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-001",
+    "perf-di-01",
+    "{{partner}}",
+    "let_go",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT11:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-001",
+    "perf-di-01",
+    "{{partner}}",
+    "comment",
+    "My sister might want this, let me ask."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-002",
+    "perf-di-01",
+    "{{adult2}}",
+    "comment",
+    "I vote we sell it and split the money."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-002",
+    "perf-di-02",
+    "{{me}}",
+    "let_go",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-003",
+    "perf-di-02",
+    "{{partner}}",
+    "unsure",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-004",
+    "perf-di-03",
+    "{{me}}",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-005",
+    "perf-di-03",
+    "{{adult2}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-006",
+    "perf-di-03",
+    "{{child}}",
+    "let_go",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT13:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-003",
+    "perf-di-03",
+    "{{child}}",
+    "comment",
+    "Please no, I love this one."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-007",
+    "perf-di-04",
+    "{{partner}}",
+    "unsure",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-008",
+    "perf-di-05",
+    "{{me}}",
+    "keep",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-009",
+    "perf-di-05",
+    "{{partner}}",
+    "let_go",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT14:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-004",
+    "perf-di-05",
+    "{{me}}",
+    "comment",
+    "Checked online, these go for about forty dollars."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT15:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-005",
+    "perf-di-05",
+    "{{partner}}",
+    "comment",
+    "It has been in that corner since we moved in."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-010",
+    "perf-di-06",
+    "{{me}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-011",
+    "perf-di-06",
+    "{{adult2}}",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-012",
+    "perf-di-06",
+    "{{child}}",
+    "keep",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-013",
+    "perf-di-07",
+    "{{partner}}",
+    "let_go",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT16:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-006",
+    "perf-di-07",
+    "{{adult2}}",
+    "comment",
+    "Can we keep it until summer?"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-014",
+    "perf-di-08",
+    "{{me}}",
+    "let_go",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-015",
+    "perf-di-08",
+    "{{partner}}",
+    "unsure",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-016",
+    "perf-di-09",
+    "{{me}}",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-017",
+    "perf-di-09",
+    "{{adult2}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-018",
+    "perf-di-09",
+    "{{child}}",
+    "let_go",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT17:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-007",
+    "perf-di-09",
+    "{{child2}}",
+    "comment",
+    "Took a photo for the listing."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT18:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-008",
+    "perf-di-09",
+    "{{me}}",
+    "comment",
+    "Does it still work? I haven't plugged it in for years."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-019",
+    "perf-di-10",
+    "{{partner}}",
+    "unsure",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-020",
+    "perf-di-11",
+    "{{me}}",
+    "keep",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-021",
+    "perf-di-11",
+    "{{partner}}",
+    "let_go",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT19:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-009",
+    "perf-di-11",
+    "{{partner}}",
+    "comment",
+    "My sister might want this, let me ask."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-022",
+    "perf-di-12",
+    "{{me}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-023",
+    "perf-di-12",
+    "{{adult2}}",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-024",
+    "perf-di-12",
+    "{{child}}",
+    "keep",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-025",
+    "perf-di-13",
+    "{{partner}}",
+    "let_go",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-010",
+    "perf-di-13",
+    "{{child}}",
+    "comment",
+    "I vote we sell it and split the money."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT11:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-011",
+    "perf-di-13",
+    "{{child2}}",
+    "comment",
+    "Please no, I love this one."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-026",
+    "perf-di-14",
+    "{{me}}",
+    "let_go",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-027",
+    "perf-di-14",
+    "{{partner}}",
+    "unsure",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-028",
+    "perf-di-15",
+    "{{me}}",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-029",
+    "perf-di-15",
+    "{{adult2}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-030",
+    "perf-di-15",
+    "{{child}}",
+    "let_go",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-012",
+    "perf-di-15",
+    "{{me}}",
+    "comment",
+    "Checked online, these go for about forty dollars."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-031",
+    "perf-di-16",
+    "{{partner}}",
+    "unsure",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-032",
+    "perf-di-17",
+    "{{me}}",
+    "keep",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-033",
+    "perf-di-17",
+    "{{partner}}",
+    "let_go",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT13:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-013",
+    "perf-di-17",
+    "{{adult2}}",
+    "comment",
+    "It has been in that corner since we moved in."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT14:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-014",
+    "perf-di-17",
+    "{{child}}",
+    "comment",
+    "Can we keep it until summer?"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-034",
+    "perf-di-18",
+    "{{me}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-035",
+    "perf-di-18",
+    "{{adult2}}",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-036",
+    "perf-di-18",
+    "{{child}}",
+    "keep",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-037",
+    "perf-di-19",
+    "{{partner}}",
+    "let_go",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT15:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-015",
+    "perf-di-19",
+    "{{child2}}",
+    "comment",
+    "Took a photo for the listing."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-038",
+    "perf-di-20",
+    "{{me}}",
+    "let_go",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-039",
+    "perf-di-20",
+    "{{partner}}",
+    "unsure",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-040",
+    "perf-di-21",
+    "{{me}}",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-041",
+    "perf-di-21",
+    "{{adult2}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-042",
+    "perf-di-21",
+    "{{child}}",
+    "let_go",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT16:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-016",
+    "perf-di-21",
+    "{{partner}}",
+    "comment",
+    "Does it still work? I haven't plugged it in for years."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT17:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-017",
+    "perf-di-21",
+    "{{adult2}}",
+    "comment",
+    "My sister might want this, let me ask."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-043",
+    "perf-di-22",
+    "{{partner}}",
+    "unsure",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-044",
+    "perf-di-23",
+    "{{me}}",
+    "keep",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-045",
+    "perf-di-23",
+    "{{partner}}",
+    "let_go",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT18:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-018",
+    "perf-di-23",
+    "{{child}}",
+    "comment",
+    "I vote we sell it and split the money."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-046",
+    "perf-di-24",
+    "{{me}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-047",
+    "perf-di-24",
+    "{{adult2}}",
+    "unsure"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-048",
+    "perf-di-24",
+    "{{child}}",
+    "keep",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-049",
+    "perf-di-25",
+    "{{partner}}",
+    "let_go",
+    "Gone already in my mind"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT19:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-019",
+    "perf-di-25",
+    "{{me}}",
+    "comment",
+    "Please no, I love this one."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT10:30:00Z','now','-2 days'))",
+   "params": [
+    "perf-dc-020",
+    "perf-di-25",
+    "{{partner}}",
+    "comment",
+    "Checked online, these go for about forty dollars."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-050",
+    "perf-di-26",
+    "{{me}}",
+    "let_go",
+    "Could go to the school fundraiser"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-4 days'), strftime('%Y-%m-%dT12:00:00Z','now','-3 days'))",
+   "params": [
+    "perf-dv-051",
+    "perf-di-26",
+    "{{partner}}",
+    "unsure",
+    "Not sure, ask me after the holidays"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-3 days'), strftime('%Y-%m-%dT12:00:00Z','now','-2 days'))",
+   "params": [
+    "perf-dv-052",
+    "perf-di-27",
+    "{{me}}",
+    "keep"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, created_at, updated_at) VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-2 days'), strftime('%Y-%m-%dT12:00:00Z','now','-1 days'))",
+   "params": [
+    "perf-dv-053",
+    "perf-di-27",
+    "{{adult2}}",
+    "let_go"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-1 days'), strftime('%Y-%m-%dT12:00:00Z','now','+0 days'))",
+   "params": [
+    "perf-dv-054",
+    "perf-di-27",
+    "{{child}}",
+    "let_go",
+    "I use this more than you think"
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT11:30:00Z','now','-3 days'))",
+   "params": [
+    "perf-dc-021",
+    "perf-di-27",
+    "{{adult2}}",
+    "comment",
+    "It has been in that corner since we moved in."
+   ]
+  },
+  {
+   "sql": "INSERT INTO app_donations__votes (id, item_id, member_id, vote, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT12:00:00Z','now','-5 days'), strftime('%Y-%m-%dT12:00:00Z','now','-4 days'))",
+   "params": [
+    "perf-dv-055",
+    "perf-di-28",
+    "{{partner}}",
+    "unsure",
+    "Gone already in my mind"
+   ]
+  }
+ ]
+}

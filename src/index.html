@@ -355,10 +355,16 @@ async function loadData() {
       );
     } else {
       totalForTab = countByTab[activeTab] ?? 0;
-      itemRes = await dbRun(
-        "SELECT * FROM app_donations__items WHERE status = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?",
-        [activeTab, PAGE_SIZE, offset]
-      );
+      // The first page is its own statement, with the page size written into
+      // it (it is PAGE_SIZE): manifest.preload declares exactly this text for
+      // the tab the app opens on, so the hub can answer it from the document.
+      // A bound LIMIT/OFFSET is not something a preload may declare.
+      itemRes = offset === 0
+        ? await dbRun("SELECT * FROM app_donations__items WHERE status = ? ORDER BY updated_at DESC LIMIT 10", [activeTab])
+        : await dbRun(
+          "SELECT * FROM app_donations__items WHERE status = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?",
+          [activeTab, PAGE_SIZE, offset]
+        );
     }
   }
   items = itemRes.rows ?? [];
