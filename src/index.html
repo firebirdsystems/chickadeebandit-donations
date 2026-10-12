@@ -157,6 +157,8 @@
       .modal-backdrop { align-items: center; padding: 20px; }
       .modal { border-radius: 14px; }
     }
+    .load-error { margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: var(--hub-tint-danger, #fee2e2); color: var(--hub-tint-danger-fg, #b91c1c); font-size: 0.9rem; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+    .load-error-retry { background: none; border: 1px solid currentColor; border-radius: 8px; padding: 5px 10px; font: inherit; font-weight: 600; color: inherit; cursor: pointer; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -166,7 +168,7 @@
       <h1>Let Go</h1>
       <div class="subtle" id="who"></div>
     </div>
-    <button class="btn btn-primary" onclick="openItemModal()">+ Add item</button>
+    <button class="btn btn-primary" id="add-item" onclick="openItemModal()">+ Add item</button>
   </div>
   <div id="root"><div class="empty">Loading...</div></div>
 </div>
@@ -239,8 +241,8 @@ async function dbRun(sql, params = []) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sql, params }),
     });
-    const data = await res.json();
-    if (!res.ok || data?.error) throw new Error(data?.error || "Database request failed");
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data || typeof data !== "object" || data.error) throw new Error(data?.error || "Couldn’t reach the hub. Try again.");
     return data;
   } catch (error) {
     console.error(error);
@@ -266,13 +268,13 @@ async function loadMembers() {
     members = demoMembers;
     return;
   }
-  try {
-    const res = await fetch(`${CONTEXT}?keys=family.members`);
-    members = ((await res.json())["family.members"]) ?? [];
-  } catch {
-    members = [];
-  }
-  if (!members.length) members = demoMembers;
+  // A failed read is a failed load, never the sample household.
+  const res = await fetch(`${CONTEXT}?keys=family.members`);
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data || typeof data !== "object") throw new Error("Couldn’t load members");
+  // A 200 can still name a key the hub failed to read: that is a failed read too.
+  if (Array.isArray(data.$errors) && data.$errors.includes("family.members")) throw new Error("Couldn’t load members");
+  members = data["family.members"] ?? [];
 }
 
 async function loadData() {
@@ -635,29 +637,39 @@ function repairFact(item) {
   return `<div class="fact"><span>Repair cost</span><strong>${repairCost}</strong></div>`;
 }
 
+// A reload the user asked for by switching view: a failure is said, and the
+// page still draws with what it holds.
+async function reloadData() {
+  try {
+    await loadData();
+  } catch (error) {
+    toast(error?.message || "Couldn’t reach the hub. Try again.");
+  }
+}
+
 window.setTab = async function(key) {
   activeTab = key;
   pageByTab[key] = pageByTab[key] ?? 1;
-  await loadData();
+  await reloadData();
   render();
 };
 
 window.setPage = async function(page) {
   pageByTab[activeTab] = page;
-  await loadData();
+  await reloadData();
   render();
 };
 
 window.setReportFilter = async function(field, value) {
   reportState = { ...reportState, [field]: value };
-  await loadData();
+  await reloadData();
   render();
 };
 
 window.resetReportYear = async function() {
   const year = new Date().getFullYear();
   reportState = { ...reportState, from: `${year}-01-01`, to: `${year}-12-31` };
-  await loadData();
+  await reloadData();
   render();
 };
 
@@ -729,6 +741,15 @@ async function addComment(itemId, input) {
   render();
 }
 
+// A write the hub answered with zero rows changed nothing (the item is gone,
+// or it is not this member's to decide): read the list again and say so.
+async function unchanged(message) {
+  closeModal();
+  await loadData();
+  render();
+  toast(message);
+}
+
 async function finalizeItem(itemId, status) {
   if (!isAdult()) {
     toast("Only adults can finalize decisions.");
@@ -741,10 +762,11 @@ async function finalizeItem(itemId, status) {
   const now = nowIso();
   const updated = { ...item, status, decision_note: note, reevaluate_on: reevaluate, decided_by: myId(), decided_at: now, updated_at: now };
   if (DB) {
-    await dbRun(
+    const res = await dbRun(
       "UPDATE app_donations__items SET status = ?, decision_note = ?, reevaluate_on = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?",
       [status, note, reevaluate, myId(), now, itemId]
     );
+    if (res.changed === 0) return unchanged("This decision could not be saved.");
     await addActivity(itemId, "decision", status);
     // name travels so a "let go" decision can become a marketplace listing
     // without a second trip through the item table (which the automation
@@ -773,7 +795,8 @@ async function deleteItem(itemId) {
   });
   if (!ok) return;
   if (DB) {
-    await dbRun("DELETE FROM app_donations__items WHERE id = ?", [itemId]);
+    const res = await dbRun("DELETE FROM app_donations__items WHERE id = ?", [itemId]);
+    if (res.changed === 0) return unchanged("This item could not be deleted.");
   }
   items = items.filter(i => i.id !== itemId);
   votes = votes.filter(v => v.item_id !== itemId);
@@ -857,10 +880,11 @@ async function saveDisposition(itemId) {
     updated_at: now,
   };
   if (DB) {
-    await dbRun(
+    const res = await dbRun(
       "UPDATE app_donations__items SET status = ?, estimated_value_cents = ?, disposition_action = ?, disposition_at = ?, disposition_note = ?, disposition_by = ?, donation_reportable = ?, updated_at = ? WHERE id = ?",
       ["archived", value, action, dispositionAt, note, myId(), reportable, now, itemId]
     );
+    if (res.changed === 0) return unchanged("This action could not be recorded.");
     await addActivity(itemId, "disposition", action);
     await publishEvent("donations.decision_made", itemId, { name: item.name, status: "archived", disposition_action: action, disposition_by: myId() });
   }
@@ -1018,16 +1042,25 @@ function toast(message) {
   toastTimer = setTimeout(() => el.remove(), 2200);
 }
 
-(async function init() {
+// The first load, and "Try again" after it fails. Nothing is drawn from an
+// unread list, and adding is held back until the list is known.
+async function firstLoad() {
+  let loadFailed = false;
   try {
     await loadMembers();
     await loadData();
     render();
   } catch (error) {
     console.error(error);
-    document.getElementById("root").innerHTML = `<div class="empty"><strong>Unable to load items.</strong><span class="subtle">${esc(error?.message || "Please try again.")}</span></div>`;
+    loadFailed = true;
+    document.getElementById("root").innerHTML = `<div class="load-error" data-testid="load-error" role="alert"><span>Couldn’t load the items.</span> <button type="button" class="load-error-retry" data-testid="load-retry">Try again</button></div>`;
   }
-})();
+  document.getElementById("add-item").style.display = loadFailed ? "none" : "";
+}
+document.addEventListener("click", event => {
+  if (event.target.closest('[data-testid="load-retry"]')) firstLoad();
+});
+firstLoad();
 </script>
 </body>
 </html>
