@@ -643,7 +643,7 @@ async function reloadData() {
   try {
     await loadData();
   } catch (error) {
-    toast(error?.message || "Couldn’t reach the hub. Try again.");
+    toast("Couldn’t load the items.");
   }
 }
 
@@ -1021,7 +1021,7 @@ document.addEventListener("click", event => {
   const itemId = button.dataset.itemId ?? article?.dataset.itemId ?? "";
   const action = button.dataset.action;
   if (action === "toggle-item") return toggleItem(itemId);
-  const run = promise => promise.catch(error => toast(error?.message || "That change could not be saved."));
+  const run = promise => promise.catch(() => toast("Couldn’t save — try again."));
   if (action === "cast-vote") return void run(castVote(itemId, button.dataset.vote));
   if (action === "edit-item") return openItemModal(itemId);
   if (action === "add-comment") return void run(addComment(itemId, article?.querySelector('[data-role="comment-input"]')));
