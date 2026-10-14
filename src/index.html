@@ -192,6 +192,7 @@ import {
   memberName as memberNameOf, isAdultMember,
   itemsForTab as itemsForTabOf, reportRows as reportRowsOf, reportCsv as reportCsvOf,
   answerLabel, conditionLabel,
+  outcomeUnknown, storedDiffers, SAVED_AS_FIRST, failureLine,
 } from "./logic.js";
 
 const CONTEXT = window.__CONTEXT_URL ?? "";
@@ -242,7 +243,9 @@ async function dbRun(sql, params = []) {
       body: JSON.stringify({ sql, params }),
     });
     const data = await res.json().catch(() => null);
-    if (!res.ok || !data || typeof data !== "object" || data.error) throw new Error(data?.error || "Couldn’t reach the hub. Try again.");
+    if (!res.ok || !data || typeof data !== "object" || data.error) {
+      throw Object.assign(new Error(data?.error || "Couldn’t reach the hub. Try again."), { status: res.status, code: data?.code });
+    }
     return data;
   } catch (error) {
     console.error(error);
@@ -730,24 +733,56 @@ async function castVote(itemId, vote) {
 async function addComment(itemId, input) {
   const body = input?.value.trim();
   if (!body) return;
-  const row = { id: crypto.randomUUID(), item_id: itemId, member_id: myId(), kind: "comment", body, created_at: nowIso() };
-  if (DB) {
-    await dbRun("INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, ?)", [row.id, row.item_id, row.member_id, row.kind, row.body, row.created_at]);
-    await addActivity(itemId, "commented", body.slice(0, 80));
-  }
-  comments = [...comments, row];
-  input.value = "";
-  if (DB) await loadData();
-  render();
+  // One press at a time: a second while the first is out would find its row
+  // and log the comment twice.
+  if (input.dataset.saving) return;
+  input.dataset.saving = "1";
+  try { await addCommentOnce(itemId, input, body); } finally { delete input.dataset.saving; }
 }
 
-// A write the hub answered with zero rows changed nothing (the item is gone,
-// or it is not this member's to decide): read the list again and say so.
-async function unchanged(message) {
-  closeModal();
-  await loadData();
+async function addCommentOnce(itemId, input, body) {
+  // The comment's id is minted once per typed comment and kept on its input,
+  // so a retry after a lost answer finds the first try's row instead of
+  // storing the comment twice.
+  let row = { id: (input.dataset.commentId ||= crypto.randomUUID()), item_id: itemId, member_id: myId(), kind: "comment", body, created_at: nowIso() };
+  let note = "";
+  if (DB) {
+    try {
+      await dbRun("INSERT INTO app_donations__comments (id, item_id, member_id, kind, body, created_at) VALUES (?, ?, ?, ?, ?, ?)", [row.id, row.item_id, row.member_id, row.kind, row.body, row.created_at]);
+    } catch (e) {
+      if (!outcomeUnknown(e)) throw e;
+      let stored = null;
+      // The id is ours: a failed read leaves the outcome unknown, so the
+      // generic line shows, never "already exists".
+      try { stored = (await dbRun("SELECT * FROM app_donations__comments WHERE id = ?", [row.id])).rows?.[0] ?? null; }
+      catch (readErr) { console.error(readErr); throw new Error("comment read-back failed", { cause: e }); }
+      if (!stored) throw e;
+      if (storedDiffers(stored, { body })) note = SAVED_AS_FIRST;
+      row = stored;
+    }
+    delete input.dataset.commentId;
+    // The comment is stored: its log line and the refresh must not make it
+    // read as failed, or posting it again would add a second one.
+    try { await addActivity(itemId, "commented", String(row.body).slice(0, 80)); } catch (e) { console.error(e); }
+  }
+  comments = [...comments.filter(c => c.id !== row.id), row];
+  input.value = "";
+  if (DB) { try { await loadData(); } catch (e) { console.error(e); } }
   render();
-  toast(message);
+  if (note) toast(note);
+}
+
+// A write the hub answered with zero rows changed nothing: re-read the item.
+// Gone: it was removed. Still there: the row policy kept this plain
+// `WHERE id = ?` write from it, the permission line. Then show what is stored.
+async function unchanged(itemId, words) {
+  closeModal();
+  let found = null;
+  try { found = !!(await dbRun("SELECT id FROM app_donations__items WHERE id = ?", [itemId])).rows?.[0]; }
+  catch (e) { console.error(e); }
+  try { await loadData(); } catch (e) { console.error(e); }
+  render();
+  toast(failureLine(null, { ...words, found }));
 }
 
 async function finalizeItem(itemId, status) {
@@ -766,8 +801,10 @@ async function finalizeItem(itemId, status) {
       "UPDATE app_donations__items SET status = ?, decision_note = ?, reevaluate_on = ?, decided_by = ?, decided_at = ?, updated_at = ? WHERE id = ?",
       [status, note, reevaluate, myId(), now, itemId]
     );
-    if (res.changed === 0) return unchanged("This decision could not be saved.");
-    await addActivity(itemId, "decision", status);
+    if (res.changed === 0) return unchanged(itemId, { action: "save the decision", thing: "item" });
+    // The decision is stored: a failed log line or refresh must not read as a
+    // failed decision.
+    try { await addActivity(itemId, "decision", status); } catch (e) { console.error(e); }
     // name travels so a "let go" decision can become a marketplace listing
     // without a second trip through the item table (which the automation
     // runner could not read anyway).
@@ -776,7 +813,7 @@ async function finalizeItem(itemId, status) {
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = status === "keep" ? "archive" : status;
   toast(status === "unsure" ? "Sent to Purge-atory for review." : `Moved to ${statusLabels[status]}.`);
-  if (DB) await loadData();
+  if (DB) { try { await loadData(); } catch (e) { console.error(e); } }
   render();
 }
 
@@ -796,7 +833,7 @@ async function deleteItem(itemId) {
   if (!ok) return;
   if (DB) {
     const res = await dbRun("DELETE FROM app_donations__items WHERE id = ?", [itemId]);
-    if (res.changed === 0) return unchanged("This item could not be deleted.");
+    if (res.changed === 0) return unchanged(itemId, { action: "delete the item", thing: "item" });
   }
   items = items.filter(i => i.id !== itemId);
   votes = votes.filter(v => v.item_id !== itemId);
@@ -884,15 +921,16 @@ async function saveDisposition(itemId) {
       "UPDATE app_donations__items SET status = ?, estimated_value_cents = ?, disposition_action = ?, disposition_at = ?, disposition_note = ?, disposition_by = ?, donation_reportable = ?, updated_at = ? WHERE id = ?",
       ["archived", value, action, dispositionAt, note, myId(), reportable, now, itemId]
     );
-    if (res.changed === 0) return unchanged("This action could not be recorded.");
-    await addActivity(itemId, "disposition", action);
+    if (res.changed === 0) return unchanged(itemId, { action: "record the action", thing: "item" });
+    // The action is stored: a failed log line or refresh must not read as failed.
+    try { await addActivity(itemId, "disposition", action); } catch (e) { console.error(e); }
     await publishEvent("donations.decision_made", itemId, { name: item.name, status: "archived", disposition_action: action, disposition_by: myId() });
   }
   items = items.map(i => i.id === itemId ? updated : i);
   activeTab = "archive";
   closeModal();
   toast("Action recorded and item archived.");
-  if (DB) await loadData();
+  if (DB) { try { await loadData(); } catch (e) { console.error(e); } }
   render();
 }
 
@@ -962,8 +1000,20 @@ async function saveItem(itemId = "") {
     return;
   }
   const now = nowIso();
-  const row = {
-    id: itemId || crypto.randomUUID(),
+  // A new item's id is the open form's, minted on its first Add and sent on
+  // every retry: a try whose answer was lost may have stored the item, and a
+  // second press must find it rather than add another and alert everyone twice.
+  const host = modalEl;
+  // One press at a time: a second while the first is out would read its row
+  // back and log and announce the same item twice.
+  if (host?.dataset.saving) return;
+  if (host) host.dataset.saving = "1";
+  try { await saveItemOnce(itemId, host, name, now); } finally { if (host) delete host.dataset.saving; }
+}
+
+async function saveItemOnce(itemId, host, name, now) {
+  let row = {
+    id: itemId || (host ? (host.dataset.newItemId ||= crypto.randomUUID()) : crypto.randomUUID()),
     name,
     category: document.getElementById("f-category").value.trim(),
     location: document.getElementById("f-location").value.trim(),
@@ -991,27 +1041,60 @@ async function saveItem(itemId = "") {
     created_at: itemId ? (items.find(i => i.id === itemId)?.created_at ?? now) : now,
     updated_at: now,
   };
+  let note = "";
   if (DB) {
     if (itemId) {
-      await dbRun(
+      const res = await dbRun(
         "UPDATE app_donations__items SET name = ?, category = ?, location = ?, used_recently = ?, broken_status = ?, repair_possible = ?, repair_cost_cents = ?, estimated_value_cents = ?, has_home = ?, keep_reason = ?, let_go_reason = ?, updated_at = ? WHERE id = ?",
         [row.name, row.category, row.location, row.used_recently, row.broken_status, row.repair_possible, row.repair_cost_cents, row.estimated_value_cents, row.has_home, row.keep_reason, row.let_go_reason, now, itemId]
       );
-      await addActivity(itemId, "updated", "");
+      // Nothing changed: re-read and say removed or not allowed.
+      if (res.changed === 0) return unchanged(itemId, { action: "save the item", thing: "item" });
+      try { await addActivity(itemId, "updated", ""); } catch (e) { console.error(e); }
     } else {
-      await dbRun(
-        "INSERT INTO app_donations__items (id, name, category, location, photo_url, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, let_go_reason, decision_note, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, reevaluate_on, decided_by, decided_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [row.id, row.name, row.category, row.location, row.photo_url, row.created_by, row.status, row.visibility, row.used_recently, row.broken_status, row.repair_possible, row.repair_cost_cents, row.estimated_value_cents, row.has_home, row.keep_reason, row.let_go_reason, row.decision_note, row.disposition_action, row.disposition_at, row.disposition_note, row.disposition_by, row.donation_reportable, row.reevaluate_on, row.decided_by, row.decided_at, row.created_at, row.updated_at]
-      );
-      await addActivity(row.id, "created", row.name);
+      const typed = {
+        name: row.name, category: row.category, location: row.location, used_recently: row.used_recently,
+        broken_status: row.broken_status, repair_possible: row.repair_possible, repair_cost_cents: row.repair_cost_cents,
+        estimated_value_cents: row.estimated_value_cents, has_home: row.has_home, keep_reason: row.keep_reason, let_go_reason: row.let_go_reason,
+      };
+      try {
+        await dbRun(
+          "INSERT INTO app_donations__items (id, name, category, location, photo_url, created_by, status, visibility, used_recently, broken_status, repair_possible, repair_cost_cents, estimated_value_cents, has_home, keep_reason, let_go_reason, decision_note, disposition_action, disposition_at, disposition_note, disposition_by, donation_reportable, reevaluate_on, decided_by, decided_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [row.id, row.name, row.category, row.location, row.photo_url, row.created_by, row.status, row.visibility, row.used_recently, row.broken_status, row.repair_possible, row.repair_cost_cents, row.estimated_value_cents, row.has_home, row.keep_reason, row.let_go_reason, row.decision_note, row.disposition_action, row.disposition_at, row.disposition_note, row.disposition_by, row.donation_reportable, row.reevaluate_on, row.decided_by, row.decided_at, row.created_at, row.updated_at]
+        );
+      } catch (e) {
+        // Unknown outcome: read the item back by the pinned id. Found means an
+        // earlier try landed and its success path never ran, so it runs now,
+        // once, as stored. Not found, or the read failed: the add fails, the id
+        // stays pinned.
+        if (!outcomeUnknown(e)) throw e;
+        let stored = null;
+        // The id is ours: a failed read leaves the outcome unknown, so the
+        // generic line shows, never "already exists".
+        try { stored = (await dbRun("SELECT * FROM app_donations__items WHERE id = ?", [row.id])).rows?.[0] ?? null; }
+        catch (readErr) { console.error(readErr); throw new Error("item read-back failed", { cause: e }); }
+        if (!stored) throw e;
+        // Edited since that first try: what was stored is kept, and said so.
+        if (storedDiffers(stored, typed)) note = SAVED_AS_FIRST;
+        row = stored;
+      }
+      if (host) delete host.dataset.newItemId;
+      // The item is stored: its log line and alert must not make it read as
+      // unsaved, or adding it again would store it twice.
+      try { await addActivity(row.id, "created", row.name); } catch (e) { console.error(e); }
       await publishEvent("donations.item_added", row.id, { name: row.name, created_by: myId() });
     }
   }
-  items = itemId ? items.map(i => i.id === itemId ? row : i) : [row, ...items];
+  items = itemId ? items.map(i => i.id === itemId ? row : i) : [row, ...items.filter(i => i.id !== row.id)];
   activeTab = row.status === "keep" ? "archive" : row.status;
-  closeModal();
-  if (DB) await loadData();
+  // Only the form that saved is closed: another may have opened meanwhile.
+  if (modalEl === host) closeModal();
+  if (DB) {
+    // A new item is stored by now: a failed refresh must not read as a failed add.
+    try { await loadData(); } catch (e) { console.error(e); }
+  }
   render();
+  if (note) toast(note);
 }
 
 document.addEventListener("click", event => {
@@ -1021,15 +1104,16 @@ document.addEventListener("click", event => {
   const itemId = button.dataset.itemId ?? article?.dataset.itemId ?? "";
   const action = button.dataset.action;
   if (action === "toggle-item") return toggleItem(itemId);
-  const run = promise => promise.catch(() => toast("Couldn’t save — try again."));
-  if (action === "cast-vote") return void run(castVote(itemId, button.dataset.vote));
+  // The hub's text stays in the console; the member sees this app's line.
+  const run = (promise, words) => promise.catch(e => { console.error(e); toast(failureLine(e, words)); });
+  if (action === "cast-vote") return void run(castVote(itemId, button.dataset.vote), { action: "save your vote", thing: "vote" });
   if (action === "edit-item") return openItemModal(itemId);
-  if (action === "add-comment") return void run(addComment(itemId, article?.querySelector('[data-role="comment-input"]')));
-  if (action === "finalize-item") return void run(finalizeItem(itemId, button.dataset.status));
-  if (action === "delete-item") return void run(deleteItem(itemId));
+  if (action === "add-comment") return void run(addComment(itemId, article?.querySelector('[data-role="comment-input"]')), { action: "add the comment", thing: "comment" });
+  if (action === "finalize-item") return void run(finalizeItem(itemId, button.dataset.status), { action: "save the decision", thing: "item" });
+  if (action === "delete-item") return void run(deleteItem(itemId), { action: "delete the item", thing: "item" });
   if (action === "open-disposition") return openDispositionModal(itemId);
-  if (action === "save-disposition") return void run(saveDisposition(itemId));
-  if (action === "save-item") return void run(saveItem(itemId));
+  if (action === "save-disposition") return void run(saveDisposition(itemId), { action: "record the action", thing: "item" });
+  if (action === "save-item") return void run(saveItem(itemId), { action: itemId ? "save the item" : "add the item", thing: "item" });
 });
 
 function toast(message) {
