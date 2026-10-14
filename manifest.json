@@ -136,9 +136,11 @@
       "kind": "inherit_visibility",
       "parent_table": "items",
       "fk_column": "item_id",
-      "writer_column": "actor_id",
-      "retain_days": { "default": 365, "timestamp_column": "created_at", "override_key": "activity_history" }
+      "writer_column": "actor_id"
     }
+  },
+  "retention": {
+    "activity": { "default": 365, "timestamp_column": "created_at", "override_key": "activity_history" }
   },
   "publishes": [
     "donations.item_added",
@@ -157,9 +159,6 @@
   "widget": {
     "label": "Let Go",
     "size": "small"
-  },
-  "resource_limits": {
-    "max_db_bytes": 52428800
   },
   "icon": "📦",
   "ai_access": {
